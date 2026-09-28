@@ -236,7 +236,6 @@ button:hover{
     word-break:break-all;
 }
 
-/* 그래프 + 재생 위치 점 */
 .graphWrap{
     position:relative;
     width:100%;
@@ -297,7 +296,6 @@ button:hover{
 
     <div class="grid">
 
-        <!-- GRAPH LAB -->
         <section class="card">
 
             <h2>📈 Graph Lab</h2>
@@ -330,10 +328,7 @@ button:hover{
 
             <div class="row" style="margin-top:10px">
 
-                <button
-                    class="primary"
-                    onclick="drawGraph()"
-                >
+                <button class="primary" onclick="drawGraph()">
                     그래프 그리기
                 </button>
 
@@ -341,32 +336,14 @@ button:hover{
                     기본 범위
                 </button>
 
-                <button onclick="addText('7')">
-                    7
-                </button>
-
-                <button onclick="addText('x')">
-                    x
-                </button>
-
-                <button onclick="addText('+')">
-                    +
-                </button>
-
-                <button onclick="backspace()">
-                    ⌫
-                </button>
-
-                <button onclick="addText('sin(')">
-                    sin(
-                </button>
-
-                <button onclick="addText('cos(')">
-                    cos(
-                </button>
+                <button onclick="addText('7')">7</button>
+                <button onclick="addText('x')">x</button>
+                <button onclick="addText('+')">+</button>
+                <button onclick="backspace()">⌫</button>
+                <button onclick="addText('sin(')">sin(</button>
+                <button onclick="addText('cos(')">cos(</button>
 
             </div>
-
 
             <div class="stats">
 
@@ -395,7 +372,6 @@ button:hover{
         </section>
 
 
-        <!-- MUSIC STUDIO -->
         <section class="card">
 
             <h2>🎛️ Music Studio</h2>
@@ -590,17 +566,13 @@ button:hover{
             </div>
 
 
-            <div
-                class="status"
-                id="musicStatus"
-            >
+            <div class="status" id="musicStatus">
                 그래프를 그린 뒤 음악을 생성해 보세요.
             </div>
 
         </section>
 
 
-        <!-- SKETCH -->
         <section class="card full">
 
             <h2>✏️ Sketch → Function</h2>
@@ -665,10 +637,6 @@ button:hover{
 
 <script>
 
-/* =========================
-   기본 변수
-========================= */
-
 const G = document.getElementById('graph');
 const gc = G.getContext('2d');
 
@@ -680,6 +648,13 @@ let xMax = 12;
 
 let yMin = -5;
 let yMax = 5;
+
+/*
+   실제 함수의 데이터 범위.
+   화면용 yMin/yMax와 분리한다.
+*/
+let dataYMin = -1;
+let dataYMax = 1;
 
 let samples = [];
 let fitExpression = '';
@@ -698,7 +673,7 @@ const TAU = Math.PI * 2;
 
 
 /* =========================
-   입력 관련
+   입력
 ========================= */
 
 function addText(t){
@@ -729,12 +704,7 @@ function backspace(){
         a--;
     }
 
-    e.setRangeText(
-        '',
-        a,
-        b,
-        'end'
-    );
+    e.setRangeText('',a,b,'end');
 }
 
 
@@ -751,7 +721,7 @@ function resetView(){
 
 
 /* =========================
-   좌표 변환
+   좌표
 ========================= */
 
 function px(x){
@@ -788,60 +758,18 @@ function evalExpr(s,x){
             .replaceAll('π','Math.PI')
             .replaceAll('^','**');
 
-        q = q.replace(
-            /\bsin\b/g,
-            'Math.sin'
-        );
+        q = q.replace(/\bsin\b/g,'Math.sin');
+        q = q.replace(/\bcos\b/g,'Math.cos');
+        q = q.replace(/\btan\b/g,'Math.tan');
+        q = q.replace(/\bsqrt\b/g,'Math.sqrt');
+        q = q.replace(/\blog\b/g,'Math.log10');
+        q = q.replace(/\bln\b/g,'Math.log');
+        q = q.replace(/\babs\b/g,'Math.abs');
+        q = q.replace(/\bexp\b/g,'Math.exp');
 
-        q = q.replace(
-            /\bcos\b/g,
-            'Math.cos'
-        );
-
-        q = q.replace(
-            /\btan\b/g,
-            'Math.tan'
-        );
-
-        q = q.replace(
-            /\bsqrt\b/g,
-            'Math.sqrt'
-        );
-
-        q = q.replace(
-            /\blog\b/g,
-            'Math.log10'
-        );
-
-        q = q.replace(
-            /\bln\b/g,
-            'Math.log'
-        );
-
-        q = q.replace(
-            /\babs\b/g,
-            'Math.abs'
-        );
-
-        q = q.replace(
-            /\bexp\b/g,
-            'Math.exp'
-        );
-
-        q = q.replace(
-            /(\d)\s*x/g,
-            '$1*x'
-        );
-
-        q = q.replace(
-            /x\s*(?=\d)/g,
-            'x*'
-        );
-
-        q = q.replace(
-            /\)(?=x|\d)/g,
-            ')*'
-        );
+        q = q.replace(/(\d)\s*x/g,'$1*x');
+        q = q.replace(/x\s*(?=\d)/g,'x*');
+        q = q.replace(/\)(?=x|\d)/g,')*');
 
         return Function(
             'x',
@@ -878,10 +806,9 @@ function drawGrid(){
     );
 
 
-    /* 격자 */
-
     gc.strokeStyle = '#151d31';
     gc.lineWidth = 1;
+
 
     for(
         let i = Math.ceil(xMin);
@@ -913,16 +840,11 @@ function drawGrid(){
     }
 
 
-    /* 축 */
-
     gc.strokeStyle = '#59647f';
     gc.lineWidth = 2;
 
 
-    if(
-        xMin <= 0 &&
-        xMax >= 0
-    ){
+    if(xMin <= 0 && xMax >= 0){
 
         const X = px(0);
 
@@ -933,10 +855,7 @@ function drawGrid(){
     }
 
 
-    if(
-        yMin <= 0 &&
-        yMax >= 0
-    ){
+    if(yMin <= 0 && yMax >= 0){
 
         const Y = py(0);
 
@@ -946,8 +865,6 @@ function drawGrid(){
         gc.stroke();
     }
 
-
-    /* 숫자 */
 
     gc.fillStyle = '#8792ad';
     gc.font = '14px system-ui';
@@ -984,8 +901,6 @@ function drawGrid(){
     }
 
 
-    /* 원점 */
-
     if(
         xMin <= 0 &&
         xMax >= 0 &&
@@ -1005,7 +920,7 @@ function drawGrid(){
 
 
 /* =========================
-   그래프 그리기
+   그래프
 ========================= */
 
 function drawGraph(){
@@ -1091,6 +1006,11 @@ function drawGraph(){
     const mn = Math.min(...ys);
     const mx = Math.max(...ys);
 
+    /* 실제 함수 범위 저장 */
+    dataYMin = mn;
+    dataYMax = mx;
+
+
     const span =
         Math.max(
             1,
@@ -1109,8 +1029,6 @@ function drawGraph(){
 
     drawGrid();
 
-
-    /* 함수 곡선 */
 
     gc.strokeStyle = '#73d7ff';
     gc.lineWidth = 4;
@@ -1140,27 +1058,19 @@ function drawGraph(){
 
         if(first){
 
-            gc.moveTo(
-                X,
-                Y
-            );
+            gc.moveTo(X,Y);
 
             first = false;
 
         }else{
 
-            gc.lineTo(
-                X,
-                Y
-            );
+            gc.lineTo(X,Y);
         }
     }
 
 
     gc.stroke();
 
-
-    /* 통계 */
 
     document.getElementById('minv').textContent =
         mn.toFixed(2);
@@ -1177,15 +1087,12 @@ function drawGraph(){
         ).toFixed(2);
 
 
-    /* 그래프를 다시 그렸으므로
-       재생 위치도 초기화 */
-
     clearPlayhead();
 }
 
 
 /* =========================
-   재생 위치 점
+   재생 점
 ========================= */
 
 function drawPlayhead(progress){
@@ -1228,8 +1135,6 @@ function drawPlayhead(progress){
     const Y = py(p.y);
 
 
-    /* 바깥 원 */
-
     ctx.beginPath();
 
     ctx.arc(
@@ -1248,8 +1153,6 @@ function drawPlayhead(progress){
     ctx.stroke();
 
 
-    /* 흰색 외곽 */
-
     ctx.beginPath();
 
     ctx.arc(
@@ -1264,8 +1167,6 @@ function drawPlayhead(progress){
 
     ctx.fill();
 
-
-    /* 파란 중심 */
 
     ctx.beginPath();
 
@@ -1305,15 +1206,13 @@ function clearPlayhead(){
 
 
 /* =========================
-   음악
+   음악 시작
 ========================= */
 
 function startMusic(){
 
     if(!samples.length){
-
         drawGraph();
-
     }
 
 
@@ -1357,28 +1256,6 @@ function startMusic(){
         );
 
 
-    const bpm =
-        Number(
-            document.getElementById(
-                'bpm'
-            ).value
-        );
-
-
-    const beat =
-        60 / bpm;
-
-
-    const totalSteps =
-        Math.max(
-            1,
-            Math.floor(
-                duration /
-                (beat / 2)
-            )
-        );
-
-
     playing = true;
 
     step = 0;
@@ -1393,19 +1270,19 @@ function startMusic(){
     document.getElementById(
         'musicStatus'
     ).textContent =
-        '▶ 그래프를 따라 음악을 재생하는 중입니다.';
+        '▶ 그래프의 형태를 따라 음정이 변화하는 중입니다.';
 
 
     timer =
         setInterval(
             scheduler,
-            80
+            50
         );
 }
 
 
 /* =========================
-   음표 스케줄러
+   스케줄러
 ========================= */
 
 function scheduler(){
@@ -1427,13 +1304,25 @@ function scheduler(){
         60 / bpm;
 
 
+    /*
+       기존 beat/2보다 촘촘하게 만든다.
+
+       그래프를 음악으로 변환할 때
+       더 많은 지점을 사용해야
+       함수의 곡선이 음정 변화에
+       더 정확하게 반영된다.
+    */
+    const stepDuration =
+        beat / 4;
+
+
     const now =
         audioCtx.currentTime;
 
 
     while(
         nextNote <
-        now + 0.15
+        now + 0.20
     ){
 
         scheduleStep(
@@ -1442,7 +1331,7 @@ function scheduler(){
         );
 
 
-        nextNote += beat / 2;
+        nextNote += stepDuration;
 
         step++;
 
@@ -1499,7 +1388,7 @@ function scheduler(){
 
 
 /* =========================
-   실제 음 재생
+   MIDI → 주파수
 ========================= */
 
 function noteFreq(midi){
@@ -1512,27 +1401,169 @@ function noteFreq(midi){
 }
 
 
-function playTone(
-    frequency,
+/* =========================
+   그래프 y값 → 음정
+========================= */
+
+/*
+   핵심 함수.
+
+   함수의 실제 y범위를 3옥타브
+   정도의 음역으로 선형 변환한다.
+
+   낮은 y
+       ↓
+   낮은 음
+
+   높은 y
+       ↓
+   높은 음
+
+   특정 함수(sin, x, x² 등)를
+   따로 처리하지 않는다.
+*/
+
+function graphYToFrequency(y){
+
+    let minY = dataYMin;
+    let maxY = dataYMax;
+
+
+    if(!Number.isFinite(minY) ||
+       !Number.isFinite(maxY)){
+
+        return noteFreq(60);
+    }
+
+
+    /*
+       상수함수 방지
+    */
+
+    if(Math.abs(maxY - minY) < 1e-9){
+
+        return noteFreq(60);
+    }
+
+
+    let normalized =
+        (y - minY) /
+        (maxY - minY);
+
+
+    normalized =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                normalized
+            )
+        );
+
+
+    /*
+       약 3옥타브 범위.
+
+       y 최저 → C3
+       y 최고 → C6
+    */
+
+    const minMidi = 48;
+    const maxMidi = 84;
+
+
+    const midi =
+        minMidi +
+        normalized *
+        (maxMidi - minMidi);
+
+
+    /*
+       반올림하지 않는다.
+
+       이것이 중요하다.
+
+       기존 코드는 Math.round() 때문에
+       그래프의 연속적인 변화가
+       피아노 음계의 계단형 변화로
+       바뀌었다.
+
+       이제는 MIDI 값을 실수로 유지하여
+       주파수가 연속적으로 변한다.
+    */
+
+    return noteFreq(midi);
+}
+
+
+/* =========================
+   그래프 멜로디
+========================= */
+
+function playGraphTone(
     time,
-    duration,
-    volume,
-    type='sine'
+    index,
+    duration
 ){
 
-    if(!audioCtx || !master){
+    if(
+        !audioCtx ||
+        !master ||
+        !samples.length
+    ){
+
         return;
     }
+
+
+    const p =
+        samples[
+            index %
+            samples.length
+        ];
+
+
+    const next =
+        samples[
+            Math.min(
+                samples.length - 1,
+                index + 1
+            )
+        ];
+
+
+    const frequency =
+        graphYToFrequency(
+            p.y
+        );
+
+
+    const nextFrequency =
+        graphYToFrequency(
+            next.y
+        );
 
 
     const osc =
         audioCtx.createOscillator();
 
+
     const gain =
         audioCtx.createGain();
 
 
-    osc.type = type;
+    /*
+       triangle wave는
+       그래프의 음정 변화를
+       비교적 명확하게 들려준다.
+    */
+
+    osc.type = 'triangle';
+
+
+    /*
+       현재 그래프 위치의 y값에서 시작
+    */
 
     osc.frequency.setValueAtTime(
         frequency,
@@ -1540,17 +1571,50 @@ function playTone(
     );
 
 
+    /*
+       다음 그래프 위치의 y값까지
+       음정을 부드럽게 이동.
+
+       따라서 sin(x)의 경우
+       음도 실제로 올라갔다 내려간다.
+    */
+
+    osc.frequency.linearRampToValueAtTime(
+        nextFrequency,
+        time + duration * 0.95
+    );
+
+
+    const volume =
+        Number(
+            document.getElementById(
+                'melVol'
+            ).value
+        );
+
+
     gain.gain.setValueAtTime(
         0,
         time
     );
 
+
     gain.gain.linearRampToValueAtTime(
         volume,
-        time + 0.01
+        time + Math.min(
+            0.025,
+            duration * 0.08
+        )
     );
 
-    gain.gain.exponentialRampToValueAtTime(
+
+    gain.gain.setValueAtTime(
+        volume,
+        time + duration * 0.78
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
         0.001,
         time + duration
     );
@@ -1568,6 +1632,10 @@ function playTone(
 }
 
 
+/* =========================
+   실제 스텝
+========================= */
+
 function scheduleStep(
     time,
     index
@@ -1578,6 +1646,22 @@ function scheduleStep(
     }
 
 
+    const bpm =
+        Number(
+            document.getElementById(
+                'bpm'
+            ).value
+        );
+
+
+    const beat =
+        60 / bpm;
+
+
+    const stepDuration =
+        beat / 4;
+
+
     const p =
         samples[
             index %
@@ -1585,29 +1669,11 @@ function scheduleStep(
         ];
 
 
-    const normalized =
-        Math.max(
-            0,
-            Math.min(
-                1,
-                (p.y - yMin) /
-                (yMax - yMin)
-            )
-        );
-
-
-    const melodyMidi =
-        48 +
-        Math.round(
-            normalized * 36
-        );
-
-
-    const beatIndex =
-        index % 8;
-
-
-    /* 그래프 멜로디 */
+    /*
+       그래프 멜로디
+       ↓
+       함수 y값을 직접 사용
+    */
 
     if(
         document.getElementById(
@@ -1615,18 +1681,36 @@ function scheduleStep(
         ).checked
     ){
 
-        playTone(
-            noteFreq(melodyMidi),
+        playGraphTone(
             time,
-            0.24,
-            Number(
-                document.getElementById(
-                    'melVol'
-                ).value
-            ),
-            'triangle'
+            index,
+            stepDuration
         );
     }
+
+
+    /*
+       아래 레이어들은 기존 음악적 배경으로 유지한다.
+       메인 멜로디와 달리 그래프를 정확히 따라갈
+       필요가 없으므로 기존 구조를 유지한다.
+    */
+
+    const normalized =
+        Math.max(
+            0,
+            Math.min(
+                1,
+                (p.y - dataYMin) /
+                Math.max(
+                    1e-9,
+                    dataYMax - dataYMin
+                )
+            )
+        );
+
+
+    const beatIndex =
+        index % 8;
 
 
     /* 베이스 */
@@ -1646,7 +1730,7 @@ function scheduleStep(
                 )
             ),
             time,
-            0.45,
+            beat * 0.75,
             Number(
                 document.getElementById(
                     'bassVol'
@@ -1676,7 +1760,7 @@ function scheduleStep(
         playTone(
             noteFreq(root),
             time,
-            0.55,
+            beat * 0.9,
             Number(
                 document.getElementById(
                     'chordVol'
@@ -1685,10 +1769,11 @@ function scheduleStep(
             'sine'
         );
 
+
         playTone(
             noteFreq(root + 4),
             time,
-            0.55,
+            beat * 0.9,
             Number(
                 document.getElementById(
                     'chordVol'
@@ -1697,10 +1782,11 @@ function scheduleStep(
             'sine'
         );
 
+
         playTone(
             noteFreq(root + 7),
             time,
-            0.55,
+            beat * 0.9,
             Number(
                 document.getElementById(
                     'chordVol'
@@ -1732,7 +1818,7 @@ function scheduleStep(
                 (beatIndex % 4) * 4
             ),
             time,
-            0.18,
+            beat * 0.35,
             Number(
                 document.getElementById(
                     'arpVol'
@@ -1798,7 +1884,70 @@ function scheduleStep(
 
 
 /* =========================
-   드럼 소리
+   일반 Tone
+========================= */
+
+function playTone(
+    frequency,
+    time,
+    duration,
+    volume,
+    type='sine'
+){
+
+    if(!audioCtx || !master){
+        return;
+    }
+
+
+    const osc =
+        audioCtx.createOscillator();
+
+    const gain =
+        audioCtx.createGain();
+
+
+    osc.type = type;
+
+
+    osc.frequency.setValueAtTime(
+        frequency,
+        time
+    );
+
+
+    gain.gain.setValueAtTime(
+        0,
+        time
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+        volume,
+        time + 0.01
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        time + duration
+    );
+
+
+    osc.connect(gain);
+    gain.connect(master);
+
+
+    osc.start(time);
+
+    osc.stop(
+        time + duration + 0.03
+    );
+}
+
+
+/* =========================
+   드럼
 ========================= */
 
 function playKick(
@@ -1826,6 +1975,7 @@ function playKick(
         time
     );
 
+
     osc.frequency.exponentialRampToValueAtTime(
         45,
         time + 0.12
@@ -1837,6 +1987,7 @@ function playKick(
         time
     );
 
+
     gain.gain.exponentialRampToValueAtTime(
         0.001,
         time + 0.16
@@ -1845,6 +1996,7 @@ function playKick(
 
     osc.connect(gain);
     gain.connect(master);
+
 
     osc.start(time);
     osc.stop(time + 0.18);
@@ -1900,7 +2052,6 @@ function playNoise(
     source.buffer = buffer;
 
     filter.type = 'highpass';
-
     filter.frequency.value = 700;
 
 
@@ -1908,6 +2059,7 @@ function playNoise(
         volume,
         time
     );
+
 
     gain.gain.exponentialRampToValueAtTime(
         0.001,
@@ -2310,6 +2462,7 @@ function fitSketch(){
         const x = xs[i];
         const y = ys[i];
 
+
         const v =
             [
                 1,
@@ -2383,7 +2536,6 @@ function fitSketch(){
 function applyFit(){
 
     if(!fitExpression){
-
         return;
     }
 
