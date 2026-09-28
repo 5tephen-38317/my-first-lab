@@ -53,6 +53,25 @@ button:hover{filter:brightness(1.18)}
 .badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#191f34;color:#b9c2ff;font-size:12px;margin-right:5px}
 .eq{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#7ee7ff;word-break:break-all}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.layers{grid-template-columns:1fr}}
+.graphWrap {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.graphWrap canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+#playhead {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
 </style>
 </head>
 <body>
@@ -68,8 +87,10 @@ button:hover{filter:brightness(1.18)}
 
   <div class="grid">
     <section class="card">
-      <h2>📈 Graph Lab</h2>
-      <canvas id="graph" width="1000" height="560"></canvas>
+      <h2>📈 Graph Lab</h2><div class="graphWrap">
+<canvas id="graph" width="1000" height="560"></canvas>
+<canvas id="playhead" width="1000" height="560"></canvas>
+</div>
       <div class="controls">
         <div>
           <div class="small">함수</div>
@@ -189,6 +210,39 @@ function drawGrid(){
   for(let i=Math.ceil(yMin);i<=Math.floor(yMax);i+=2)gc.fillText(i,px(0)+6,py(i)-6);
   if(xMin<=0&&xMax>=0&&yMin<=0&&yMax>=0){gc.fillStyle='#ffffff';gc.fillText('(0, 0)',px(0)+8,py(0)-10)}
 }
+function drawPlayhead(progress){
+  if(!samples.length)return;
+
+  const overlay=document.getElementById('playhead');
+  const ctx=overlay.getContext('2d');
+
+  ctx.clearRect(0,0,overlay.width,overlay.height);
+
+  const idx=Math.min(
+    samples.length-1,
+    Math.floor(progress*(samples.length-1))
+  );
+
+  const p=samples[idx];
+  const X=px(p.x);
+  const Y=py(p.y);
+
+  ctx.beginPath();
+  ctx.arc(X,Y,9,0,Math.PI*2);
+  ctx.fillStyle='#ffffff';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(X,Y,5,0,Math.PI*2);
+  ctx.fillStyle='#73d7ff';
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.arc(X,Y,13,0,Math.PI*2);
+  ctx.strokeStyle='rgba(115,215,255,.35)';
+  ctx.lineWidth=2;
+  ctx.stroke();
+}
 function drawGraph(){
   const r=document.getElementById('xr').value.split(',').map(Number);
   if(r.length===2&&Number.isFinite(r[0])&&Number.isFinite(r[1])&&r[0]<r[1]){xMin=r[0];xMax=r[1]}
@@ -302,6 +356,7 @@ function startMusic(){
     }
     const elapsed=Math.max(0,now-songStart),pct=Math.min(100,elapsed/duration*100);
     document.getElementById('playbar').style.width=pct+'%';
+    drawPlayhead(Math.min(1, elapsed/duration));
     if(elapsed>=duration||step>=totalSteps)stopMusic(false);
   },80);
 }
