@@ -256,7 +256,17 @@ button:hover{
     pointer-events:none;
 }
 
+.layerTitle{
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#b9c2ff;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.3px;
+}
+
 @media(max-width:900px){
+
     .grid{
         grid-template-columns:1fr;
     }
@@ -277,6 +287,7 @@ button:hover{
 <div class="wrap">
 
     <div class="hero">
+
         <div class="logo">☄️ Cosmos</div>
 
         <div class="sub">
@@ -284,13 +295,17 @@ button:hover{
         </div>
 
         <div style="margin-top:12px">
+
             <span class="badge">GRAPH</span>
             <span class="badge">MELODY</span>
-            <span class="badge">DRUMS</span>
+            <span class="badge">RHYTHM</span>
             <span class="badge">BASS</span>
             <span class="badge">CHORDS</span>
+            <span class="badge">PAD</span>
             <span class="badge">SKETCH → FUNCTION</span>
+
         </div>
+
     </div>
 
 
@@ -301,34 +316,64 @@ button:hover{
             <h2>📈 Graph Lab</h2>
 
             <div class="graphWrap">
-                <canvas id="graph" width="1000" height="560"></canvas>
-                <canvas id="playhead" width="1000" height="560"></canvas>
+
+                <canvas
+                    id="graph"
+                    width="1000"
+                    height="560"
+                ></canvas>
+
+                <canvas
+                    id="playhead"
+                    width="1000"
+                    height="560"
+                ></canvas>
+
             </div>
+
 
             <div class="controls">
 
                 <div>
-                    <div class="small">함수</div>
+
+                    <div class="small">
+                        함수
+                    </div>
+
                     <input
                         id="expr"
                         value="sin(x)"
                         spellcheck="false"
                     >
+
                 </div>
 
+
                 <div>
-                    <div class="small">x 범위</div>
+
+                    <div class="small">
+                        x 범위
+                    </div>
+
                     <input
                         id="xr"
                         value="-12, 12"
                     >
+
                 </div>
 
             </div>
 
-            <div class="row" style="margin-top:10px">
 
-                <button class="primary" onclick="drawGraph()">
+            <div
+                class="row"
+                style="margin-top:10px"
+            >
+
+                <button
+                    class="primary"
+                    onclick="drawGraph()"
+                >
                     그래프 그리기
                 </button>
 
@@ -336,14 +381,32 @@ button:hover{
                     기본 범위
                 </button>
 
-                <button onclick="addText('7')">7</button>
-                <button onclick="addText('x')">x</button>
-                <button onclick="addText('+')">+</button>
-                <button onclick="backspace()">⌫</button>
-                <button onclick="addText('sin(')">sin(</button>
-                <button onclick="addText('cos(')">cos(</button>
+                <button onclick="addText('7')">
+                    7
+                </button>
+
+                <button onclick="addText('x')">
+                    x
+                </button>
+
+                <button onclick="addText('+')">
+                    +
+                </button>
+
+                <button onclick="backspace()">
+                    ⌫
+                </button>
+
+                <button onclick="addText('sin(')">
+                    sin(
+                </button>
+
+                <button onclick="addText('cos(')">
+                    cos(
+                </button>
 
             </div>
+
 
             <div class="stats">
 
@@ -376,71 +439,134 @@ button:hover{
 
             <h2>🎛️ Music Studio</h2>
 
+
             <div class="controls">
 
                 <div>
-                    <div class="small">곡 길이</div>
+
+                    <div class="small">
+                        곡 길이
+                    </div>
 
                     <select id="duration">
-                        <option value="30">30초</option>
-                        <option value="60">1분</option>
-                        <option value="120">2분</option>
-                        <option value="180" selected>3분</option>
-                        <option value="300">5분</option>
+
+                        <option value="10">
+                            10초
+                        </option>
+
+                        <option value="20">
+                            20초
+                        </option>
+
+                        <option value="30">
+                            30초
+                        </option>
+
+                        <option value="60">
+                            1분
+                        </option>
+
+                        <option value="120">
+                            2분
+                        </option>
+
+                        <option value="180" selected>
+                            3분
+                        </option>
+
+                        <option value="240">
+                            4분
+                        </option>
+
+                        <option value="300">
+                            5분
+                        </option>
+
                     </select>
+
                 </div>
 
 
                 <div>
-                    <div class="small">BPM</div>
 
-                    <select id="bpm">
-                        <option>80</option>
-                        <option selected>100</option>
-                        <option>120</option>
-                        <option>140</option>
-                        <option>160</option>
-                    </select>
-                </div>
-
-
-                <div>
-                    <div class="small">스타일</div>
+                    <div class="small">
+                        스타일
+                    </div>
 
                     <select id="genre">
-                        <option>Pop</option>
-                        <option>K-pop inspired</option>
-                        <option>J-pop inspired</option>
-                        <option>Lo-fi</option>
-                        <option>EDM</option>
+
+                        <option>
+                            Pop
+                        </option>
+
+                        <option>
+                            K-pop inspired
+                        </option>
+
+                        <option>
+                            J-pop inspired
+                        </option>
+
+                        <option>
+                            Lo-fi
+                        </option>
+
+                        <option>
+                            EDM
+                        </option>
+
                     </select>
+
                 </div>
 
 
                 <div>
-                    <div class="small">음계</div>
+
+                    <div class="small">
+                        음계
+                    </div>
 
                     <select id="scale">
-                        <option>C Major</option>
-                        <option>A Minor</option>
-                        <option>Pentatonic</option>
-                        <option>Chromatic</option>
+
+                        <option>
+                            C Major
+                        </option>
+
+                        <option>
+                            A Minor
+                        </option>
+
+                        <option>
+                            Pentatonic
+                        </option>
+
+                        <option>
+                            Chromatic
+                        </option>
+
                     </select>
+
                 </div>
 
             </div>
 
 
-            <h2 style="margin-top:18px">
-                🎚️ 레이어
-            </h2>
+            <div class="layerTitle">
+                🎚️ 음악 레이어
+            </div>
 
 
             <div class="layers">
 
                 <div class="layer">
+
                     <label>
-                        <input id="melodyOn" type="checkbox" checked>
+                        <input
+                            id="melodyOn"
+                            type="checkbox"
+                            checked
+                        >
+
                         그래프 멜로디
                     </label>
 
@@ -452,12 +578,19 @@ button:hover{
                         step=".01"
                         value=".42"
                     >
+
                 </div>
 
 
                 <div class="layer">
+
                     <label>
-                        <input id="drumOn" type="checkbox" checked>
+                        <input
+                            id="drumOn"
+                            type="checkbox"
+                            checked
+                        >
+
                         드럼
                     </label>
 
@@ -467,14 +600,21 @@ button:hover{
                         min="0"
                         max="1"
                         step=".01"
-                        value=".28"
+                        value=".24"
                     >
+
                 </div>
 
 
                 <div class="layer">
+
                     <label>
-                        <input id="bassOn" type="checkbox" checked>
+                        <input
+                            id="bassOn"
+                            type="checkbox"
+                            checked
+                        >
+
                         베이스
                     </label>
 
@@ -484,14 +624,21 @@ button:hover{
                         min="0"
                         max="1"
                         step=".01"
-                        value=".25"
+                        value=".20"
                     >
+
                 </div>
 
 
                 <div class="layer">
+
                     <label>
-                        <input id="chordOn" type="checkbox" checked>
+                        <input
+                            id="chordOn"
+                            type="checkbox"
+                            checked
+                        >
+
                         코드
                     </label>
 
@@ -501,14 +648,20 @@ button:hover{
                         min="0"
                         max="1"
                         step=".01"
-                        value=".18"
+                        value=".15"
                     >
+
                 </div>
 
 
                 <div class="layer">
+
                     <label>
-                        <input id="arpOn" type="checkbox">
+                        <input
+                            id="arpOn"
+                            type="checkbox"
+                        >
+
                         아르페지오
                     </label>
 
@@ -518,14 +671,45 @@ button:hover{
                         min="0"
                         max="1"
                         step=".01"
-                        value=".15"
+                        value=".11"
                     >
+
                 </div>
 
 
                 <div class="layer">
+
                     <label>
-                        <input id="percOn" type="checkbox" checked>
+                        <input
+                            id="padOn"
+                            type="checkbox"
+                            checked
+                        >
+
+                        패드
+                    </label>
+
+                    <input
+                        id="padVol"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step=".01"
+                        value=".10"
+                    >
+
+                </div>
+
+
+                <div class="layer">
+
+                    <label>
+                        <input
+                            id="percOn"
+                            type="checkbox"
+                            checked
+                        >
+
                         퍼커션
                     </label>
 
@@ -535,19 +719,48 @@ button:hover{
                         min="0"
                         max="1"
                         step=".01"
-                        value=".12"
+                        value=".08"
                     >
+
+                </div>
+
+
+                <div class="layer">
+
+                    <label>
+                        <input
+                            id="textureOn"
+                            type="checkbox"
+                        >
+
+                        텍스처
+                    </label>
+
+                    <input
+                        id="textureVol"
+                        type="range"
+                        min="0"
+                        max="1"
+                        step=".01"
+                        value=".07"
+                    >
+
                 </div>
 
             </div>
 
 
             <div class="timeline">
+
                 <div id="playbar"></div>
+
             </div>
 
 
-            <div class="row" style="margin-top:12px">
+            <div
+                class="row"
+                style="margin-top:12px"
+            >
 
                 <button
                     class="primary"
@@ -566,7 +779,10 @@ button:hover{
             </div>
 
 
-            <div class="status" id="musicStatus">
+            <div
+                class="status"
+                id="musicStatus"
+            >
                 그래프를 그린 뒤 음악을 생성해 보세요.
             </div>
 
@@ -578,9 +794,11 @@ button:hover{
             <h2>✏️ Sketch → Function</h2>
 
             <div class="small">
+
                 마우스로 곡선을 그리면 좌표를 수집하고
                 3차 다항식으로 근사합니다.
                 근사된 식은 아래에 표시되며 그래프에 적용할 수 있습니다.
+
             </div>
 
 
@@ -588,11 +806,13 @@ button:hover{
                 class="sketchWrap"
                 style="margin-top:10px"
             >
+
                 <canvas
                     id="sketch"
                     width="1200"
                     height="360"
                 ></canvas>
+
             </div>
 
 
@@ -620,28 +840,40 @@ button:hover{
 
 
             <div class="status">
+
                 근사식:
+
                 <span
                     class="eq"
                     id="fitEq"
                 >
                     아직 없음
                 </span>
+
             </div>
 
         </section>
 
     </div>
+
 </div>
 
 
 <script>
 
-const G = document.getElementById('graph');
-const gc = G.getContext('2d');
+const G =
+    document.getElementById('graph');
 
-const S = document.getElementById('sketch');
-const sc = S.getContext('2d');
+const gc =
+    G.getContext('2d');
+
+
+const S =
+    document.getElementById('sketch');
+
+const sc =
+    S.getContext('2d');
+
 
 let xMin = -12;
 let xMax = 12;
@@ -649,15 +881,15 @@ let xMax = 12;
 let yMin = -5;
 let yMax = 5;
 
-/*
-   실제 함수의 데이터 범위.
-   화면용 yMin/yMax와 분리한다.
-*/
+
 let dataYMin = -1;
 let dataYMax = 1;
 
+
 let samples = [];
+
 let fitExpression = '';
+
 
 let audioCtx = null;
 let master = null;
@@ -665,11 +897,23 @@ let master = null;
 let playing = false;
 let timer = null;
 
-let nextNote = 0;
 let songStart = 0;
-let step = 0;
 
-const TAU = Math.PI * 2;
+let songDuration = 180;
+
+
+/*
+    음악 생성용 그래프 포인트.
+
+    화면 그래프의 1000개 점을
+    음악에서는 적절한 개수로
+    다시 샘플링한다.
+*/
+let musicPoints = [];
+
+
+const TAU =
+    Math.PI * 2;
 
 
 /* =========================
@@ -678,7 +922,8 @@ const TAU = Math.PI * 2;
 
 function addText(t){
 
-    const e = document.getElementById('expr');
+    const e =
+        document.getElementById('expr');
 
     e.focus();
 
@@ -693,18 +938,27 @@ function addText(t){
 
 function backspace(){
 
-    const e = document.getElementById('expr');
+    const e =
+        document.getElementById('expr');
 
     e.focus();
 
-    let a = e.selectionStart;
-    let b = e.selectionEnd;
+    let a =
+        e.selectionStart;
+
+    let b =
+        e.selectionEnd;
 
     if(a === b && a > 0){
         a--;
     }
 
-    e.setRangeText('',a,b,'end');
+    e.setRangeText(
+        '',
+        a,
+        b,
+        'end'
+    );
 }
 
 
@@ -715,6 +969,9 @@ function resetView(){
 
     yMin = -5;
     yMax = 5;
+
+    document.getElementById('xr').value =
+        '-12, 12';
 
     drawGraph();
 }
@@ -753,23 +1010,77 @@ function evalExpr(s,x){
 
     try{
 
-        let q = s
+        let q =
+            s
             .toLowerCase()
             .replaceAll('π','Math.PI')
             .replaceAll('^','**');
 
-        q = q.replace(/\bsin\b/g,'Math.sin');
-        q = q.replace(/\bcos\b/g,'Math.cos');
-        q = q.replace(/\btan\b/g,'Math.tan');
-        q = q.replace(/\bsqrt\b/g,'Math.sqrt');
-        q = q.replace(/\blog\b/g,'Math.log10');
-        q = q.replace(/\bln\b/g,'Math.log');
-        q = q.replace(/\babs\b/g,'Math.abs');
-        q = q.replace(/\bexp\b/g,'Math.exp');
+        q =
+            q.replace(
+                /\bsin\b/g,
+                'Math.sin'
+            );
 
-        q = q.replace(/(\d)\s*x/g,'$1*x');
-        q = q.replace(/x\s*(?=\d)/g,'x*');
-        q = q.replace(/\)(?=x|\d)/g,')*');
+        q =
+            q.replace(
+                /\bcos\b/g,
+                'Math.cos'
+            );
+
+        q =
+            q.replace(
+                /\btan\b/g,
+                'Math.tan'
+            );
+
+        q =
+            q.replace(
+                /\bsqrt\b/g,
+                'Math.sqrt'
+            );
+
+        q =
+            q.replace(
+                /\blog\b/g,
+                'Math.log10'
+            );
+
+        q =
+            q.replace(
+                /\bln\b/g,
+                'Math.log'
+            );
+
+        q =
+            q.replace(
+                /\babs\b/g,
+                'Math.abs'
+            );
+
+        q =
+            q.replace(
+                /\bexp\b/g,
+                'Math.exp'
+            );
+
+        q =
+            q.replace(
+                /(\d)\s*x/g,
+                '$1*x'
+            );
+
+        q =
+            q.replace(
+                /x\s*(?=\d)/g,
+                'x*'
+            );
+
+        q =
+            q.replace(
+                /\)(?=x|\d)/g,
+                ')*'
+            );
 
         return Function(
             'x',
@@ -796,7 +1107,9 @@ function drawGrid(){
         G.height
     );
 
-    gc.fillStyle = '#070a12';
+
+    gc.fillStyle =
+        '#070a12';
 
     gc.fillRect(
         0,
@@ -806,7 +1119,9 @@ function drawGrid(){
     );
 
 
-    gc.strokeStyle = '#151d31';
+    gc.strokeStyle =
+        '#151d31';
+
     gc.lineWidth = 1;
 
 
@@ -840,34 +1155,51 @@ function drawGrid(){
     }
 
 
-    gc.strokeStyle = '#59647f';
+    gc.strokeStyle =
+        '#59647f';
+
     gc.lineWidth = 2;
 
 
-    if(xMin <= 0 && xMax >= 0){
+    if(
+        xMin <= 0 &&
+        xMax >= 0
+    ){
 
-        const X = px(0);
+        const X =
+            px(0);
 
         gc.beginPath();
+
         gc.moveTo(X,0);
         gc.lineTo(X,G.height);
+
         gc.stroke();
     }
 
 
-    if(yMin <= 0 && yMax >= 0){
+    if(
+        yMin <= 0 &&
+        yMax >= 0
+    ){
 
-        const Y = py(0);
+        const Y =
+            py(0);
 
         gc.beginPath();
+
         gc.moveTo(0,Y);
         gc.lineTo(G.width,Y);
+
         gc.stroke();
     }
 
 
-    gc.fillStyle = '#8792ad';
-    gc.font = '14px system-ui';
+    gc.fillStyle =
+        '#8792ad';
+
+    gc.font =
+        '14px system-ui';
 
 
     for(
@@ -908,12 +1240,76 @@ function drawGrid(){
         yMax >= 0
     ){
 
-        gc.fillStyle = '#ffffff';
+        gc.fillStyle =
+            '#ffffff';
 
         gc.fillText(
             '(0, 0)',
             px(0) + 8,
             py(0) - 10
+        );
+    }
+}
+
+
+/* =========================
+   음악용 포인트 생성
+========================= */
+
+function rebuildMusicPoints(){
+
+    musicPoints = [];
+
+
+    if(!samples.length){
+        return;
+    }
+
+
+    /*
+       곡 전체에서 그래프를 한 번
+       정확히 순회하기 위한 포인트.
+
+       너무 많은 oscillator를 만들지
+       않으면서도 곡선 형태를 충분히
+       부드럽게 유지한다.
+    */
+
+    const count =
+        Math.min(
+            320,
+            Math.max(
+                120,
+                Math.floor(
+                    samples.length * 0.32
+                )
+            )
+        );
+
+
+    for(
+        let i = 0;
+        i < count;
+        i++
+    ){
+
+        const pos =
+            i /
+            (count - 1);
+
+
+        const idx =
+            Math.min(
+                samples.length - 1,
+                Math.round(
+                    pos *
+                    (samples.length - 1)
+                )
+            );
+
+
+        musicPoints.push(
+            samples[idx]
         );
     }
 }
@@ -968,7 +1364,8 @@ function drawGraph(){
         const x =
             xMin +
             (xMax - xMin) *
-            i / 999;
+            i /
+            999;
 
 
         const y =
@@ -995,18 +1392,31 @@ function drawGraph(){
 
     if(ys.length === 0){
 
-        document.getElementById('minv').textContent = '-';
-        document.getElementById('maxv').textContent = '-';
-        document.getElementById('avgv').textContent = '-';
+        document.getElementById(
+            'minv'
+        ).textContent = '-';
+
+        document.getElementById(
+            'maxv'
+        ).textContent = '-';
+
+        document.getElementById(
+            'avgv'
+        ).textContent = '-';
+
+        musicPoints = [];
 
         return;
     }
 
 
-    const mn = Math.min(...ys);
-    const mx = Math.max(...ys);
+    const mn =
+        Math.min(...ys);
 
-    /* 실제 함수 범위 저장 */
+    const mx =
+        Math.max(...ys);
+
+
     dataYMin = mn;
     dataYMax = mx;
 
@@ -1030,7 +1440,9 @@ function drawGraph(){
     drawGrid();
 
 
-    gc.strokeStyle = '#73d7ff';
+    gc.strokeStyle =
+        '#73d7ff';
+
     gc.lineWidth = 4;
 
     gc.beginPath();
@@ -1041,8 +1453,11 @@ function drawGraph(){
 
     for(const p of samples){
 
-        const X = px(p.x);
-        const Y = py(p.y);
+        const X =
+            px(p.x);
+
+        const Y =
+            py(p.y);
 
 
         if(
@@ -1072,20 +1487,31 @@ function drawGraph(){
     gc.stroke();
 
 
-    document.getElementById('minv').textContent =
+    document.getElementById(
+        'minv'
+    ).textContent =
         mn.toFixed(2);
 
-    document.getElementById('maxv').textContent =
+
+    document.getElementById(
+        'maxv'
+    ).textContent =
         mx.toFixed(2);
 
-    document.getElementById('avgv').textContent =
+
+    document.getElementById(
+        'avgv'
+    ).textContent =
         (
             ys.reduce(
                 (a,b) => a+b,
                 0
-            ) / ys.length
+            ) /
+            ys.length
         ).toFixed(2);
 
+
+    rebuildMusicPoints();
 
     clearPlayhead();
 }
@@ -1103,7 +1529,10 @@ function drawPlayhead(progress){
 
 
     const overlay =
-        document.getElementById('playhead');
+        document.getElementById(
+            'playhead'
+        );
+
 
     const ctx =
         overlay.getContext('2d');
@@ -1131,8 +1560,11 @@ function drawPlayhead(progress){
         samples[idx];
 
 
-    const X = px(p.x);
-    const Y = py(p.y);
+    const X =
+        px(p.x);
+
+    const Y =
+        py(p.y);
 
 
     ctx.beginPath();
@@ -1142,7 +1574,7 @@ function drawPlayhead(progress){
         Y,
         13,
         0,
-        Math.PI * 2
+        TAU
     );
 
     ctx.strokeStyle =
@@ -1160,10 +1592,11 @@ function drawPlayhead(progress){
         Y,
         9,
         0,
-        Math.PI * 2
+        TAU
     );
 
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle =
+        '#ffffff';
 
     ctx.fill();
 
@@ -1175,10 +1608,11 @@ function drawPlayhead(progress){
         Y,
         5,
         0,
-        Math.PI * 2
+        TAU
     );
 
-    ctx.fillStyle = '#73d7ff';
+    ctx.fillStyle =
+        '#73d7ff';
 
     ctx.fill();
 }
@@ -1187,14 +1621,19 @@ function drawPlayhead(progress){
 function clearPlayhead(){
 
     const overlay =
-        document.getElementById('playhead');
+        document.getElementById(
+            'playhead'
+        );
+
 
     if(!overlay){
         return;
     }
 
+
     const ctx =
         overlay.getContext('2d');
+
 
     ctx.clearRect(
         0,
@@ -1206,10 +1645,70 @@ function clearPlayhead(){
 
 
 /* =========================
+   스타일에 따른 음악 설정
+========================= */
+
+function getStyleSettings(){
+
+    const style =
+        document.getElementById(
+            'genre'
+        ).value;
+
+
+    if(style === 'Lo-fi'){
+
+        return {
+            pulse:.62,
+            padWave:'sine',
+            melodyWave:'triangle'
+        };
+    }
+
+
+    if(style === 'EDM'){
+
+        return {
+            pulse:.42,
+            padWave:'sawtooth',
+            melodyWave:'triangle'
+        };
+    }
+
+
+    if(style === 'J-pop inspired'){
+
+        return {
+            pulse:.50,
+            padWave:'triangle',
+            melodyWave:'triangle'
+        };
+    }
+
+
+    if(style === 'K-pop inspired'){
+
+        return {
+            pulse:.46,
+            padWave:'sawtooth',
+            melodyWave:'triangle'
+        };
+    }
+
+
+    return {
+        pulse:.52,
+        padWave:'sine',
+        melodyWave:'triangle'
+    };
+}
+
+
+/* =========================
    음악 시작
 ========================= */
 
-function startMusic(){
+async function startMusic(){
 
     if(!samples.length){
         drawGraph();
@@ -1237,18 +1736,23 @@ function startMusic(){
         )();
 
 
+    await audioCtx.resume();
+
+
     master =
         audioCtx.createGain();
 
 
-    master.gain.value = 0.22;
+    master.gain.value =
+        0.20;
+
 
     master.connect(
         audioCtx.destination
     );
 
 
-    const duration =
+    songDuration =
         Number(
             document.getElementById(
                 'duration'
@@ -1258,137 +1762,40 @@ function startMusic(){
 
     playing = true;
 
-    step = 0;
 
     songStart =
         audioCtx.currentTime;
-
-    nextNote =
-        songStart;
 
 
     document.getElementById(
         'musicStatus'
     ).textContent =
-        '▶ 그래프의 형태를 따라 음정이 변화하는 중입니다.';
+        '▶ 그래프 전체를 따라 멜로디와 반주 레이어를 생성하는 중입니다.';
+
+
+    /*
+       음악용 전체 구조를 미리
+       스케줄링한다.
+
+       그래프 멜로디는 곡 전체에서
+       그래프를 정확히 한 번 순회한다.
+    */
+
+    scheduleGraphMelody();
+
+    scheduleBackingLayers();
 
 
     timer =
         setInterval(
-            scheduler,
+            updatePlayback,
             50
         );
 }
 
 
 /* =========================
-   스케줄러
-========================= */
-
-function scheduler(){
-
-    if(!playing || !audioCtx){
-        return;
-    }
-
-
-    const bpm =
-        Number(
-            document.getElementById(
-                'bpm'
-            ).value
-        );
-
-
-    const beat =
-        60 / bpm;
-
-
-    /*
-       기존 beat/2보다 촘촘하게 만든다.
-
-       그래프를 음악으로 변환할 때
-       더 많은 지점을 사용해야
-       함수의 곡선이 음정 변화에
-       더 정확하게 반영된다.
-    */
-    const stepDuration =
-        beat / 4;
-
-
-    const now =
-        audioCtx.currentTime;
-
-
-    while(
-        nextNote <
-        now + 0.20
-    ){
-
-        scheduleStep(
-            nextNote,
-            step
-        );
-
-
-        nextNote += stepDuration;
-
-        step++;
-
-
-        if(step > 100000){
-            break;
-        }
-    }
-
-
-    const duration =
-        Number(
-            document.getElementById(
-                'duration'
-            ).value
-        );
-
-
-    const elapsed =
-        Math.max(
-            0,
-            now - songStart
-        );
-
-
-    const pct =
-        Math.min(
-            100,
-            elapsed /
-            duration *
-            100
-        );
-
-
-    document.getElementById(
-        'playbar'
-    ).style.width =
-        pct + '%';
-
-
-    drawPlayhead(
-        Math.min(
-            1,
-            elapsed / duration
-        )
-    );
-
-
-    if(elapsed >= duration){
-
-        stopMusic(false);
-    }
-}
-
-
-/* =========================
-   MIDI → 주파수
+   그래프 y → 주파수
 ========================= */
 
 function noteFreq(midi){
@@ -1401,54 +1808,41 @@ function noteFreq(midi){
 }
 
 
-/* =========================
-   그래프 y값 → 음정
-========================= */
-
-/*
-   핵심 함수.
-
-   함수의 실제 y범위를 3옥타브
-   정도의 음역으로 선형 변환한다.
-
-   낮은 y
-       ↓
-   낮은 음
-
-   높은 y
-       ↓
-   높은 음
-
-   특정 함수(sin, x, x² 등)를
-   따로 처리하지 않는다.
-*/
-
 function graphYToFrequency(y){
 
-    let minY = dataYMin;
-    let maxY = dataYMax;
+    const minY =
+        dataYMin;
+
+    const maxY =
+        dataYMax;
 
 
-    if(!Number.isFinite(minY) ||
-       !Number.isFinite(maxY)){
+    if(
+        !Number.isFinite(minY) ||
+        !Number.isFinite(maxY)
+    ){
 
         return noteFreq(60);
     }
 
 
-    /*
-       상수함수 방지
-    */
-
-    if(Math.abs(maxY - minY) < 1e-9){
+    if(
+        Math.abs(
+            maxY - minY
+        ) < 1e-9
+    ){
 
         return noteFreq(60);
     }
 
 
     let normalized =
-        (y - minY) /
-        (maxY - minY);
+        (
+            y - minY
+        ) /
+        (
+            maxY - minY
+        );
 
 
     normalized =
@@ -1462,10 +1856,11 @@ function graphYToFrequency(y){
 
 
     /*
-       약 3옥타브 범위.
+       C3 ~ C6.
 
-       y 최저 → C3
-       y 최고 → C6
+       반올림하지 않기 때문에
+       그래프의 높낮이가 그대로
+       연속적인 주파수 변화가 된다.
     */
 
     const minMidi = 48;
@@ -1475,22 +1870,11 @@ function graphYToFrequency(y){
     const midi =
         minMidi +
         normalized *
-        (maxMidi - minMidi);
+        (
+            maxMidi -
+            minMidi
+        );
 
-
-    /*
-       반올림하지 않는다.
-
-       이것이 중요하다.
-
-       기존 코드는 Math.round() 때문에
-       그래프의 연속적인 변화가
-       피아노 음계의 계단형 변화로
-       바뀌었다.
-
-       이제는 MIDI 값을 실수로 유지하여
-       주파수가 연속적으로 변한다.
-    */
 
     return noteFreq(midi);
 }
@@ -1500,89 +1884,21 @@ function graphYToFrequency(y){
    그래프 멜로디
 ========================= */
 
-function playGraphTone(
-    time,
-    index,
-    duration
-){
+function scheduleGraphMelody(){
 
     if(
-        !audioCtx ||
-        !master ||
-        !samples.length
+        !document.getElementById(
+            'melodyOn'
+        ).checked
     ){
 
         return;
     }
 
 
-    const p =
-        samples[
-            index %
-            samples.length
-        ];
-
-
-    const next =
-        samples[
-            Math.min(
-                samples.length - 1,
-                index + 1
-            )
-        ];
-
-
-    const frequency =
-        graphYToFrequency(
-            p.y
-        );
-
-
-    const nextFrequency =
-        graphYToFrequency(
-            next.y
-        );
-
-
-    const osc =
-        audioCtx.createOscillator();
-
-
-    const gain =
-        audioCtx.createGain();
-
-
-    /*
-       triangle wave는
-       그래프의 음정 변화를
-       비교적 명확하게 들려준다.
-    */
-
-    osc.type = 'triangle';
-
-
-    /*
-       현재 그래프 위치의 y값에서 시작
-    */
-
-    osc.frequency.setValueAtTime(
-        frequency,
-        time
-    );
-
-
-    /*
-       다음 그래프 위치의 y값까지
-       음정을 부드럽게 이동.
-
-       따라서 sin(x)의 경우
-       음도 실제로 올라갔다 내려간다.
-    */
-
-    osc.frequency.linearRampToValueAtTime(
-        nextFrequency,
-        time + duration * 0.95
-    );
+    if(!musicPoints.length){
+        return;
+    }
 
 
     const volume =
@@ -1593,293 +1909,637 @@ function playGraphTone(
         );
 
 
-    gain.gain.setValueAtTime(
+    const settings =
+        getStyleSettings();
+
+
+    /*
+       그래프의 각 포인트가
+       곡의 시간축에 균등하게 배치된다.
+
+       따라서
+
+       10초 → 그래프 전체를 10초에
+       5분 → 그래프 전체를 5분에
+
+       정확히 한 번 순회한다.
+    */
+
+    const segmentDuration =
+        songDuration /
+        musicPoints.length;
+
+
+    for(
+        let i = 0;
+        i < musicPoints.length;
+        i++
+    ){
+
+        const p =
+            musicPoints[i];
+
+
+        const next =
+            musicPoints[
+                Math.min(
+                    musicPoints.length - 1,
+                    i + 1
+                )
+            ];
+
+
+        const time =
+            songStart +
+            i *
+            segmentDuration;
+
+
+        const frequency =
+            graphYToFrequency(
+                p.y
+            );
+
+
+        const nextFrequency =
+            graphYToFrequency(
+                next.y
+            );
+
+
+        const osc =
+            audioCtx.createOscillator();
+
+
+        const gain =
+            audioCtx.createGain();
+
+
+        osc.type =
+            settings.melodyWave;
+
+
+        osc.frequency.setValueAtTime(
+            frequency,
+            time
+        );
+
+
+        /*
+           현재 y → 다음 y를
+           연속적으로 연결한다.
+
+           이것이 그래프의 곡선을
+           음악의 pitch contour로
+           만드는 핵심이다.
+        */
+
+        osc.frequency.linearRampToValueAtTime(
+            nextFrequency,
+            time +
+            segmentDuration *
+            0.96
+        );
+
+
+        gain.gain.setValueAtTime(
+            0.001,
+            time
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+            volume,
+            time +
+            Math.min(
+                0.08,
+                segmentDuration * 0.18
+            )
+        );
+
+
+        gain.gain.setValueAtTime(
+            volume,
+            time +
+            segmentDuration * 0.80
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+            0.001,
+            time +
+            segmentDuration
+        );
+
+
+        osc.connect(gain);
+        gain.connect(master);
+
+
+        osc.start(time);
+
+
+        osc.stop(
+            time +
+            segmentDuration +
+            0.05
+        );
+    }
+}
+
+
+/* =========================
+   반주 레이어
+========================= */
+
+function scheduleBackingLayers(){
+
+    const settings =
+        getStyleSettings();
+
+
+    /*
+       곡 길이에 따라 자동으로
+       음악의 pulse가 결정된다.
+
+       사용자가 BPM을 직접 조절하지
+       않아도 스타일과 곡 길이에 맞춰
+       일정한 음악적 움직임을 만든다.
+    */
+
+    let pulse =
+        settings.pulse;
+
+
+    /*
+       아주 짧은 곡은 조금 빠르게,
+       긴 곡은 조금 여유 있게.
+    */
+
+    if(songDuration <= 20){
+        pulse *= 0.78;
+    }
+
+    else if(songDuration >= 240){
+        pulse *= 1.12;
+    }
+
+
+    const totalSteps =
+        Math.ceil(
+            songDuration /
+            pulse
+        );
+
+
+    for(
+        let i = 0;
+        i < totalSteps;
+        i++
+    ){
+
+        const time =
+            songStart +
+            i * pulse;
+
+
+        if(
+            time >=
+            songStart +
+            songDuration
+        ){
+
+            break;
+        }
+
+
+        const progress =
+            Math.min(
+                1,
+                i /
+                Math.max(
+                    1,
+                    totalSteps - 1
+                )
+            );
+
+
+        const graphIndex =
+            Math.min(
+                samples.length - 1,
+                Math.floor(
+                    progress *
+                    (samples.length - 1)
+                )
+            );
+
+
+        const p =
+            samples[
+                graphIndex
+            ];
+
+
+        const normalized =
+            getNormalizedY(
+                p.y
+            );
+
+
+        const root =
+            getRootMidi(
+                normalized
+            );
+
+
+        const stepInBar =
+            i % 8;
+
+
+        /*
+           베이스
+        */
+
+        if(
+            document.getElementById(
+                'bassOn'
+            ).checked
+        ){
+
+            if(
+                stepInBar === 0 ||
+                stepInBar === 4
+            ){
+
+                playTone(
+                    noteFreq(
+                        root - 12
+                    ),
+                    time,
+                    pulse * 0.80,
+                    Number(
+                        document.getElementById(
+                            'bassVol'
+                        ).value
+                    ),
+                    'sine'
+                );
+            }
+        }
+
+
+        /*
+           코드
+        */
+
+        if(
+            document.getElementById(
+                'chordOn'
+            ).checked
+        ){
+
+            if(stepInBar === 0){
+
+                playChord(
+                    root,
+                    time,
+                    pulse * 3.7,
+                    Number(
+                        document.getElementById(
+                            'chordVol'
+                        ).value
+                    ),
+                    settings.padWave
+                );
+            }
+        }
+
+
+        /*
+           아르페지오
+        */
+
+        if(
+            document.getElementById(
+                'arpOn'
+            ).checked
+        ){
+
+            const arpNotes =
+                [
+                    root + 12,
+                    root + 16,
+                    root + 19,
+                    root + 24
+                ];
+
+
+            const arpIndex =
+                i % arpNotes.length;
+
+
+            playTone(
+                noteFreq(
+                    arpNotes[arpIndex]
+                ),
+                time,
+                pulse * 0.72,
+                Number(
+                    document.getElementById(
+                        'arpVol'
+                    ).value
+                ),
+                'triangle'
+            );
+        }
+
+
+        /*
+           드럼
+        */
+
+        if(
+            document.getElementById(
+                'drumOn'
+            ).checked
+        ){
+
+            if(
+                stepInBar === 0 ||
+                stepInBar === 4
+            ){
+
+                playKick(
+                    time,
+                    Number(
+                        document.getElementById(
+                            'drumVol'
+                        ).value
+                    )
+                );
+            }
+
+
+            if(
+                stepInBar === 2 ||
+                stepInBar === 6
+            ){
+
+                playSnare(
+                    time,
+                    Number(
+                        document.getElementById(
+                            'drumVol'
+                        ).value
+                    )
+                );
+            }
+        }
+
+
+        /*
+           퍼커션
+        */
+
+        if(
+            document.getElementById(
+                'percOn'
+            ).checked
+        ){
+
+            if(
+                stepInBar % 2 === 1
+            ){
+
+                playHat(
+                    time,
+                    Number(
+                        document.getElementById(
+                            'percVol'
+                        ).value
+                    )
+                );
+            }
+        }
+
+
+        /*
+           패드
+
+           코드보다 훨씬 길게
+           깔려서 공간감을 만든다.
+        */
+
+        if(
+            document.getElementById(
+                'padOn'
+            ).checked
+        ){
+
+            if(stepInBar === 0){
+
+                playPad(
+                    root + 12,
+                    time,
+                    pulse * 7.5,
+                    Number(
+                        document.getElementById(
+                            'padVol'
+                        ).value
+                    ),
+                    settings.padWave
+                );
+            }
+        }
+
+
+        /*
+           텍스처
+
+           그래프 위치에 따라
+           아주 조용하게 고음이 움직인다.
+        */
+
+        if(
+            document.getElementById(
+                'textureOn'
+            ).checked
+        ){
+
+            if(
+                stepInBar === 3 ||
+                stepInBar === 7
+            ){
+
+                const textureMidi =
+                    72 +
+                    Math.round(
+                        normalized * 12
+                    );
+
+
+                playTone(
+                    noteFreq(
+                        textureMidi
+                    ),
+                    time,
+                    pulse * 0.45,
+                    Number(
+                        document.getElementById(
+                            'textureVol'
+                        ).value
+                    ),
+                    'sine'
+                );
+            }
+        }
+    }
+}
+
+
+/* =========================
+   y 정규화
+========================= */
+
+function getNormalizedY(y){
+
+    if(
+        Math.abs(
+            dataYMax -
+            dataYMin
+        ) < 1e-9
+    ){
+
+        return 0.5;
+    }
+
+
+    return Math.max(
         0,
-        time
-    );
-
-
-    gain.gain.linearRampToValueAtTime(
-        volume,
-        time + Math.min(
-            0.025,
-            duration * 0.08
+        Math.min(
+            1,
+            (
+                y -
+                dataYMin
+            ) /
+            (
+                dataYMax -
+                dataYMin
+            )
         )
-    );
-
-
-    gain.gain.setValueAtTime(
-        volume,
-        time + duration * 0.78
-    );
-
-
-    gain.gain.linearRampToValueAtTime(
-        0.001,
-        time + duration
-    );
-
-
-    osc.connect(gain);
-    gain.connect(master);
-
-
-    osc.start(time);
-
-    osc.stop(
-        time + duration + 0.03
     );
 }
 
 
 /* =========================
-   실제 스텝
+   음계 / 코드 루트
 ========================= */
 
-function scheduleStep(
-    time,
-    index
-){
+function getRootMidi(normalized){
 
-    if(!samples.length){
-        return;
-    }
+    const scale =
+        document.getElementById(
+            'scale'
+        ).value;
 
 
-    const bpm =
-        Number(
-            document.getElementById(
-                'bpm'
-            ).value
-        );
-
-
-    const beat =
-        60 / bpm;
-
-
-    const stepDuration =
-        beat / 4;
-
-
-    const p =
-        samples[
-            index %
-            samples.length
+    const major =
+        [
+            0,
+            2,
+            4,
+            5,
+            7,
+            9,
+            11
         ];
 
 
-    /*
-       그래프 멜로디
-       ↓
-       함수 y값을 직접 사용
-    */
-
-    if(
-        document.getElementById(
-            'melodyOn'
-        ).checked
-    ){
-
-        playGraphTone(
-            time,
-            index,
-            stepDuration
-        );
-    }
-
-
-    /*
-       아래 레이어들은 기존 음악적 배경으로 유지한다.
-       메인 멜로디와 달리 그래프를 정확히 따라갈
-       필요가 없으므로 기존 구조를 유지한다.
-    */
-
-    const normalized =
-        Math.max(
+    const minor =
+        [
             0,
-            Math.min(
-                1,
-                (p.y - dataYMin) /
-                Math.max(
-                    1e-9,
-                    dataYMax - dataYMin
-                )
+            2,
+            3,
+            5,
+            7,
+            8,
+            10
+        ];
+
+
+    const pent =
+        [
+            0,
+            2,
+            4,
+            7,
+            9
+        ];
+
+
+    const chromatic =
+        [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+        ];
+
+
+    let arr =
+        major;
+
+
+    let base = 48;
+
+
+    if(scale === 'A Minor'){
+
+        arr = minor;
+        base = 45;
+    }
+
+
+    else if(
+        scale === 'Pentatonic'
+    ){
+
+        arr = pent;
+        base = 48;
+    }
+
+
+    else if(
+        scale === 'Chromatic'
+    ){
+
+        arr = chromatic;
+        base = 48;
+    }
+
+
+    const index =
+        Math.min(
+            arr.length - 1,
+            Math.floor(
+                normalized *
+                arr.length
             )
         );
 
 
-    const beatIndex =
-        index % 8;
-
-
-    /* 베이스 */
-
-    if(
-        document.getElementById(
-            'bassOn'
-        ).checked &&
-        beatIndex % 4 === 0
-    ){
-
-        playTone(
-            noteFreq(
-                36 +
-                Math.round(
-                    normalized * 12
-                )
-            ),
-            time,
-            beat * 0.75,
-            Number(
-                document.getElementById(
-                    'bassVol'
-                ).value
-            ),
-            'sine'
-        );
-    }
-
-
-    /* 코드 */
-
-    if(
-        document.getElementById(
-            'chordOn'
-        ).checked &&
-        beatIndex % 4 === 0
-    ){
-
-        const root =
-            48 +
-            Math.round(
-                normalized * 12
-            );
-
-
-        playTone(
-            noteFreq(root),
-            time,
-            beat * 0.9,
-            Number(
-                document.getElementById(
-                    'chordVol'
-                ).value
-            ),
-            'sine'
-        );
-
-
-        playTone(
-            noteFreq(root + 4),
-            time,
-            beat * 0.9,
-            Number(
-                document.getElementById(
-                    'chordVol'
-                ).value
-            ) * 0.65,
-            'sine'
-        );
-
-
-        playTone(
-            noteFreq(root + 7),
-            time,
-            beat * 0.9,
-            Number(
-                document.getElementById(
-                    'chordVol'
-                ).value
-            ) * 0.55,
-            'sine'
-        );
-    }
-
-
-    /* 아르페지오 */
-
-    if(
-        document.getElementById(
-            'arpOn'
-        ).checked
-    ){
-
-        const root =
-            60 +
-            Math.round(
-                normalized * 12
-            );
-
-
-        playTone(
-            noteFreq(
-                root +
-                (beatIndex % 4) * 4
-            ),
-            time,
-            beat * 0.35,
-            Number(
-                document.getElementById(
-                    'arpVol'
-                ).value
-            ),
-            'triangle'
-        );
-    }
-
-
-    /* 드럼 */
-
-    if(
-        document.getElementById(
-            'drumOn'
-        ).checked
-    ){
-
-        if(beatIndex % 4 === 0){
-
-            playKick(
-                time,
-                Number(
-                    document.getElementById(
-                        'drumVol'
-                    ).value
-                )
-            );
-
-        }else if(beatIndex % 4 === 2){
-
-            playSnare(
-                time,
-                Number(
-                    document.getElementById(
-                        'drumVol'
-                    ).value
-                )
-            );
-        }
-    }
-
-
-    /* 퍼커션 */
-
-    if(
-        document.getElementById(
-            'percOn'
-        ).checked &&
-        beatIndex % 2 === 1
-    ){
-
-        playHat(
-            time,
-            Number(
-                document.getElementById(
-                    'percVol'
-                ).value
-            )
-        );
-    }
+    return (
+        base +
+        arr[index]
+    );
 }
 
 
@@ -1895,7 +2555,11 @@ function playTone(
     type='sine'
 ){
 
-    if(!audioCtx || !master){
+    if(
+        !audioCtx ||
+        !master
+    ){
+
         return;
     }
 
@@ -1903,11 +2567,13 @@ function playTone(
     const osc =
         audioCtx.createOscillator();
 
+
     const gain =
         audioCtx.createGain();
 
 
-    osc.type = type;
+    osc.type =
+        type;
 
 
     osc.frequency.setValueAtTime(
@@ -1917,18 +2583,145 @@ function playTone(
 
 
     gain.gain.setValueAtTime(
-        0,
+        0.001,
         time
     );
 
 
     gain.gain.linearRampToValueAtTime(
         volume,
-        time + 0.01
+        time + 0.025
     );
 
 
     gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        time +
+        Math.max(
+            0.05,
+            duration
+        )
+    );
+
+
+    osc.connect(gain);
+    gain.connect(master);
+
+
+    osc.start(time);
+
+
+    osc.stop(
+        time +
+        Math.max(
+            0.05,
+            duration
+        ) +
+        0.04
+    );
+}
+
+
+/* =========================
+   코드
+========================= */
+
+function playChord(
+    root,
+    time,
+    duration,
+    volume,
+    wave
+){
+
+    const notes =
+        [
+            root,
+            root + 4,
+            root + 7
+        ];
+
+
+    notes.forEach(
+        (midi,i) => {
+
+            playTone(
+                noteFreq(midi),
+                time,
+                duration,
+                volume *
+                (
+                    i === 0
+                    ? 1
+                    : 0.62
+                ),
+                wave
+            );
+        }
+    );
+}
+
+
+/* =========================
+   Pad
+========================= */
+
+function playPad(
+    midi,
+    time,
+    duration,
+    volume,
+    wave
+){
+
+    if(
+        !audioCtx ||
+        !master
+    ){
+
+        return;
+    }
+
+
+    const osc =
+        audioCtx.createOscillator();
+
+
+    const gain =
+        audioCtx.createGain();
+
+
+    osc.type =
+        wave;
+
+
+    osc.frequency.setValueAtTime(
+        noteFreq(midi),
+        time
+    );
+
+
+    gain.gain.setValueAtTime(
+        0.001,
+        time
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+        volume,
+        time + 0.45
+    );
+
+
+    gain.gain.setValueAtTime(
+        volume,
+        time +
+        duration -
+        0.65
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
         0.001,
         time + duration
     );
@@ -1940,8 +2733,11 @@ function playTone(
 
     osc.start(time);
 
+
     osc.stop(
-        time + duration + 0.03
+        time +
+        duration +
+        0.08
     );
 }
 
@@ -1955,7 +2751,11 @@ function playKick(
     volume
 ){
 
-    if(!audioCtx || !master){
+    if(
+        !audioCtx ||
+        !master
+    ){
+
         return;
     }
 
@@ -1963,11 +2763,13 @@ function playKick(
     const osc =
         audioCtx.createOscillator();
 
+
     const gain =
         audioCtx.createGain();
 
 
-    osc.type = 'sine';
+    osc.type =
+        'sine';
 
 
     osc.frequency.setValueAtTime(
@@ -1999,7 +2801,10 @@ function playKick(
 
 
     osc.start(time);
-    osc.stop(time + 0.18);
+
+    osc.stop(
+        time + 0.18
+    );
 }
 
 
@@ -2009,7 +2814,11 @@ function playNoise(
     volume
 ){
 
-    if(!audioCtx || !master){
+    if(
+        !audioCtx ||
+        !master
+    ){
+
         return;
     }
 
@@ -2017,7 +2826,10 @@ function playNoise(
     const buffer =
         audioCtx.createBuffer(
             1,
-            audioCtx.sampleRate * duration,
+            Math.floor(
+                audioCtx.sampleRate *
+                duration
+            ),
             audioCtx.sampleRate
         );
 
@@ -2049,10 +2861,15 @@ function playNoise(
         audioCtx.createGain();
 
 
-    source.buffer = buffer;
+    source.buffer =
+        buffer;
 
-    filter.type = 'highpass';
-    filter.frequency.value = 700;
+
+    filter.type =
+        'highpass';
+
+    filter.frequency.value =
+        700;
 
 
     gain.gain.setValueAtTime(
@@ -2104,6 +2921,69 @@ function playHat(
 
 
 /* =========================
+   재생 진행
+========================= */
+
+function updatePlayback(){
+
+    if(
+        !playing ||
+        !audioCtx
+    ){
+
+        return;
+    }
+
+
+    const now =
+        audioCtx.currentTime;
+
+
+    const elapsed =
+        Math.max(
+            0,
+            now -
+            songStart
+        );
+
+
+    const progress =
+        Math.min(
+            1,
+            elapsed /
+            songDuration
+        );
+
+
+    document.getElementById(
+        'playbar'
+    ).style.width =
+        (
+            progress * 100
+        ) + '%';
+
+
+    drawPlayhead(
+        progress
+    );
+
+
+    if(
+        elapsed >=
+        songDuration
+    ){
+
+        stopMusic(false);
+
+        document.getElementById(
+            'musicStatus'
+        ).textContent =
+            '✓ 그래프를 하나의 곡으로 변환했습니다.';
+    }
+}
+
+
+/* =========================
    정지
 ========================= */
 
@@ -2136,7 +3016,8 @@ function stopMusic(
 
     document.getElementById(
         'playbar'
-    ).style.width = '0%';
+    ).style.width =
+        '0%';
 
 
     clearPlayhead();
@@ -2157,6 +3038,7 @@ function stopMusic(
 ========================= */
 
 let drawing = false;
+
 let sketchPoints = [];
 
 
@@ -2167,15 +3049,23 @@ function sketchPosition(e){
 
 
     return {
+
         x:
-            (e.clientX - rect.left) *
+            (
+                e.clientX -
+                rect.left
+            ) *
             S.width /
             rect.width,
 
         y:
-            (e.clientY - rect.top) *
+            (
+                e.clientY -
+                rect.top
+            ) *
             S.height /
             rect.height
+
     };
 }
 
@@ -2214,12 +3104,14 @@ S.addEventListener(
             p.y
         );
 
+
         sc.strokeStyle =
             '#73d7ff';
 
         sc.lineWidth = 4;
 
-        sc.lineCap = 'round';
+        sc.lineCap =
+            'round';
     }
 );
 
@@ -2283,7 +3175,9 @@ function clearSketch(){
 
 function solve(A,b){
 
-    const n = b.length;
+    const n =
+        b.length;
+
 
     const M =
         A.map(
@@ -2308,8 +3202,12 @@ function solve(A,b){
         ){
 
             if(
-                Math.abs(M[j][i]) >
-                Math.abs(M[p][i])
+                Math.abs(
+                    M[j][i]
+                ) >
+                Math.abs(
+                    M[p][i]
+                )
             ){
 
                 p = j;
@@ -2400,7 +3298,9 @@ function solve(A,b){
 
 function fitSketch(){
 
-    if(sketchPoints.length < 8){
+    if(
+        sketchPoints.length < 8
+    ){
 
         document.getElementById(
             'fitEq'
@@ -2428,8 +3328,12 @@ function fitSketch(){
     const xs =
         pts.map(
             p =>
-                (p.x / S.width) *
-                20 - 10
+                (
+                    p.x /
+                    S.width
+                ) *
+                20 -
+                10
         );
 
 
@@ -2437,7 +3341,10 @@ function fitSketch(){
         pts.map(
             p =>
                 4 -
-                (p.y / S.height) *
+                (
+                    p.y /
+                    S.height
+                ) *
                 8
         );
 
@@ -2445,7 +3352,8 @@ function fitSketch(){
     const A =
         Array.from(
             {length:4},
-            () => Array(4).fill(0)
+            () =>
+                Array(4).fill(0)
         );
 
 
@@ -2460,6 +3368,7 @@ function fitSketch(){
     ){
 
         const x = xs[i];
+
         const y = ys[i];
 
 
@@ -2479,7 +3388,8 @@ function fitSketch(){
         ){
 
             b[r] +=
-                v[r] * y;
+                v[r] *
+                y;
 
 
             for(
@@ -2489,7 +3399,8 @@ function fitSketch(){
             ){
 
                 A[r][c] +=
-                    v[r] * v[c];
+                    v[r] *
+                    v[c];
             }
         }
     }
@@ -2510,7 +3421,12 @@ function fitSketch(){
     }
 
 
-    const [a0,a1,a2,a3] =
+    const [
+        a0,
+        a1,
+        a2,
+        a3
+    ] =
         coef;
 
 
@@ -2561,6 +3477,7 @@ drawGraph();
 </body>
 </html>
 """
+
 
 components.html(
     HTML,
