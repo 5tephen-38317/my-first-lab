@@ -323,3 +323,239 @@
                 <button class="key-btn" onclick="insertKey('abs(')">abs</button>
             </div>
         </div>
+```html
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, screen.x, screen.y - 18);
+            });
+        }
+
+        function drawActiveHoverMarker() {
+            const pt = state.activeHoverPoint;
+            if (!pt || !Number.isFinite(pt.x) || !Number.isFinite(pt.y)) return;
+            const screen = mathToScreen(pt.x, pt.y);
+            const width = canvas.width / (window.devicePixelRatio || 1);
+            const height = canvas.height / (window.devicePixelRatio || 1);
+            if (screen.x < -20 || screen.x > width + 20 || screen.y < -20 || screen.y > height + 20) return;
+            ctx.save();
+            ctx.shadowColor = pt.color || '#2b72ee';
+            ctx.shadowBlur = pt.audioTrace ? 18 : 8;
+            ctx.fillStyle = pt.color || '#2b72ee';
+            ctx.beginPath();
+            ctx.arc(screen.x, screen.y, pt.audioTrace ? 7 : 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            if (pt.audioTrace) {
+                ctx.strokeStyle = pt.color || '#2b72ee';
+                ctx.globalAlpha = 0.45;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.arc(screen.x, screen.y, 13, 0, Math.PI * 2); ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        /**
+         * Expressions & Sidebar List Manager
+         */
+        function addExpression(rawText = '') {
+            saveHistory();
+            const item = {
+                id: 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+                type: 'expression',
+                rawText: rawText,
+                compiled: null,
+                color: getNextColor(),
+                lineStyle: 'solid',
+                visible: true,
+                error: false,
+                hasSlider: false,
+                varName: null
+            };
+            state.items.push(item);
+            state.activeItemId = item.id;
+            renderExpressionList();
+            if (rawText) updateExpression(item.id, rawText);
+        }
+
+        function addTableItem() {
+            saveHistory();
+            const item = {
+                id: 'item_' + Date.now(),
+                type: 'table',
+                color: getNextColor(),
+                visible: true,
+                rows: [
+                    { x: '-2', y: '4' },
+                    { x: '-1', y: '1' },
+                    { x: '0', y: '0' },
+                    { x: '1', y: '1' },
+                    { x: '2', y: '4' }
+                ]
+            };
+            state.items.push(item);
+            renderExpressionList();
+            render();
+        }
+
+        function addNoteItem() {
+            saveHistory();
+            const item = {
+                id: 'item_' + Date.now(),
+                type: 'note',
+                text: '주석을 입력하세요...'
+            };
+            state.items.push(item);
+            renderExpressionList();
+        }
+
+        function updateExpression(id, text) {
+            const item = state.items.find(it => it.id === id);
+            if (!item) return;
+
+            item.rawText = text;
+            if (!text.trim()) {
+                item.compiled = null;
+                item.error = false;
+                item.hasSlider = false;
+                render();
+                return;
+            }
+
+            try {
+                let expr = text;
+                if (expr.includes('=')) {
+                    expr = expr.split('=')[1].trim();
+                }
+
+                // Check for slider variables (e.g., 'a' or 'b')
+                if (text.includes('a') && !state.variables.hasOwnProperty('a')) state.variables.a = 1;
+                if (text.includes('b') && !state.variables.hasOwnProperty('b')) state.variables.b = 2;
+
+                item.compiled = math.compile(expr);
+                item.compiled.evaluate({ x: 1, ...state.variables });
+                item.error = false;
+            } catch (err) {
+                item.compiled = null;
+                item.error = true;
+            }
+
+            render();
+        }
+
+        function removeExpression(id) {
+            saveHistory();
+            state.items = state.items.filter(it => it.id !== id);
+            if (state.activeItemId === id) {
+                state.activeItemId = state.items.length > 0 ? state.items[0].id : null;
+            }
+            renderExpressionList();
+            render();
+        }
+
+        function toggleVisibility(id) {
+            const item = state.items.find(it => it.id === id);
+            if (item) {
+                item.visible = !item.visible;
+                renderExpressionList();
+                render();
+            }
+        }
+
+        function updateVariableSlider(varName, value) {
+            state.variables[varName] = parseFloat(value);
+            document.getElementById(`slider-val-${varName}`).textContent = value;
+            render();
+        }
+
+        function updateTableCell(itemId, rowIdx, col, val) {
+            const item = state.items.find(it => it.id === itemId);
+            if (item && item.rows[rowIdx]) {
+                item.rows[rowIdx][col] = val;
+                render();
+            }
+        }
+
+        /**
+         * Render Expression List in Sidebar
+         */
+        function renderExpressionList() {
+            expressionsList.innerHTML = '';
+
+            state.items.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = `p-3 space-y-2 border-b border-slate-100 transition ${state.activeItemId === item.id ? 'bg-blue-50/50' : 'hover:bg-slate-50'}`;
+
+                if (item.type === 'expression') {
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-semibold text-slate-400 w-4 text-right">${index + 1}</span>
+
+                            <button onclick="toggleVisibility('${item.id}')" 
+                                    oncontextmenu="openColorPopover(event, '${item.id}')"
+                                    class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition" 
+                                    style="background-color: ${item.visible ? item.color : 'transparent'}; border: 2px solid ${item.color}">
+                                ${item.visible ? '<i class="fa-solid fa-check text-white text-[10px]"></i>' : ''}
+                            </button>
+
+                            <input id="input-${item.id}" type="text" value="${item.rawText}" placeholder="수식 입력 (예: y = sin(x))" 
+                                   onfocus="setActiveItem('${item.id}')"
+                                   oninput="updateExpression('${item.id}', this.value)"
+                                   class="flex-1 text-base font-serif italic bg-transparent focus:outline-none ${item.error ? 'text-rose-600' : 'text-slate-800'}">
+
+                            <button onclick="removeExpression('${item.id}')" class="text-slate-300 hover:text-slate-600 p-1 rounded transition">
+                                <i class="fa-solid fa-xmark text-sm"></i>
+                            </button>
+                        </div>
+                    `;
+                } else if (item.type === 'table') {
+                    let rowsHtml = '';
+                    item.rows.forEach((r, rIdx) => {
+                        rowsHtml += `
+                            <tr class="border-b border-slate-100">
+                                <td class="p-1"><input type="text" value="${r.x}" oninput="updateTableCell('${item.id}', ${rIdx}, 'x', this.value)" class="w-full text-center bg-slate-50 border rounded text-xs py-0.5"></td>
+                                <td class="p-1"><input type="text" value="${r.y}" oninput="updateTableCell('${item.id}', ${rIdx}, 'y', this.value)" class="w-full text-center bg-slate-50 border rounded text-xs py-0.5"></td>
+                            </tr>
+                        `;
+                    });
+
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold text-slate-400 w-4 text-right">${index + 1}</span>
+                                <span class="text-xs font-bold text-emerald-600">표 (Table)</span>
+                            </div>
+                            <button onclick="removeExpression('${item.id}')" class="text-slate-300 hover:text-slate-600 p-1 rounded"><i class="fa-solid fa-xmark text-sm"></i></button>
+                        </div>
+                        <table class="w-full text-xs text-center border">
+                            <thead>
+                                <tr class="bg-slate-100 font-semibold">
+                                    <th class="p-1 border">x₁</th>
+                                    <th class="p-1 border">y₁</th>
+                                </tr>
+                            </thead>
+                            <tbody>${rowsHtml}</tbody>
+                        </table>
+                    `;
+                } else if (item.type === 'note') {
+                    el.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-semibold text-slate-400 w-4 text-right">${index + 1}</span>
+                            <textarea oninput="updateNote('${item.id}', this.value)" class="w-full text-sm border border-amber-200 rounded p-2 bg-amber-50 focus:outline-none focus:border-amber-400" rows="3">${item.text}</textarea>
+                            <button onclick="removeExpression('${item.id}')" class="text-slate-300 hover:text-slate-600 p-1 rounded"><i class="fa-solid fa-xmark text-sm"></i></button>
+                        </div>
+                    `;
+                }
+
+                el.addEventListener('click', () => {
+                    if (state.activeItemId !== item.id) {
+                        state.activeItemId = item.id;
+                        renderExpressionList();
+                    }
+                });
+
+                expressionsList.appendChild(el);
+            });
+        }
