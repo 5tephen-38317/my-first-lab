@@ -1,375 +1,325 @@
-import streamlit as st
-import streamlit.components.v1 as components
-
-st.set_page_config(
-    page_title="Cosmos - Graph to Music",
-    page_icon="✿",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
-
-HTML = r"""
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmos - Graph to Music</title>
-<style>
-:root{
-    --bg:#f6f7fb;
-    --surface:#ffffff;
-    --text:#17181d;
-    --muted:#6f7480;
-    --line:#e6e7ec;
-    --accent:#7a5af8;
-    --accent-dark:#6242e5;
-    --accent-soft:#f0edff;
-}
-*{box-sizing:border-box;}
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    overflow:hidden;
-}
-.workspaceShell{
-    display:flex;
-    flex-direction:column;
-    height:100vh;
-}
-.appToolbar{
-    height:54px;
-    background:#292929;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    padding:0 16px;
-    gap:16px;
-}
-.toolbarBrand{
-    font-weight:800;
-    font-size:16px;
-    letter-spacing:1px;
-    color:#fff;
-}
-.fileTitle{
-    background:transparent;
-    color:#fff;
-    border:0;
-    border-left:1px solid #666;
-    padding-left:12px;
-    font-size:15px;
-    outline:none;
-}
-.workspace{
-    display:grid;
-    grid-template-columns:320px 1fr;
-    flex:1;
-    height:calc(100vh - 54px);
-    overflow:hidden;
-}
-.expressionPane{
-    background:#fff;
-    border-right:1px solid var(--line);
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-}
-.expressionHeader{
-    padding:12px;
-    border-bottom:1px solid var(--line);
-    font-weight:bold;
-    font-size:13px;
-}
-.expressionList{
-    flex:1;
-    overflow-y:auto;
-    padding:12px;
-}
-.expressionItem{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:8px;
-    border:1px solid var(--line);
-    border-radius:8px;
-    background:#fbfbfd;
-    margin-bottom:8px;
-}
-.colorDot{
-    width:8px;
-    height:28px;
-    background:var(--accent);
-    border-radius:4px;
-}
-.expressionInput{
-    flex:1;
-    border:1px solid #ccc;
-    border-radius:6px;
-    padding:6px 10px;
-    font-size:14px;
-    outline:none;
-}
-.expressionInput:focus{
-    border-color:var(--accent);
-}
-.graphWorkspace{
-    display:flex;
-    flex-direction:column;
-    background:#fff;
-    position:relative;
-}
-.graphCanvasArea{
-    flex:1;
-    position:relative;
-    background:#fcfcfe;
-}
-canvas{
-    width:100%;
-    height:100%;
-    display:block;
-    touch-action:none;
-}
-.audioToolbar{
-    height:50px;
-    background:#f7f7f9;
-    border-top:1px solid var(--line);
-    display:flex;
-    align-items:center;
-    padding:0 16px;
-    gap:12px;
-}
-button{
-    background:var(--accent);
-    color:#fff;
-    border:0;
-    border-radius:6px;
-    padding:8px 14px;
-    font-size:12px;
-    font-weight:bold;
-    cursor:pointer;
-}
-button:hover{
-    background:var(--accent-dark);
-}
-.keypad{
-    position:absolute;
-    bottom:12px;
-    right:12px;
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:8px;
-    box-shadow:0 4px 16px rgba(0,0,0,0.1);
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    gap:4px;
-    z-index:10;
-}
-.keypad button{
-    background:#f0f0f5;
-    color:#333;
-    padding:8px;
-    font-size:12px;
-    min-width:36px;
-}
-.keypad button:hover{
-    background:#e0e0ea;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmos | 그래핑 계산기</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Math.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.js"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Cosmos Keypad Button Styling */
+        .key-btn {
+            background-color: #f1f3f4;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #202124;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.08s ease;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+        .key-btn:hover {
+            background-color: #e8eaed;
+            border-color: #bdc1c6;
+        }
+        .key-btn:active {
+            background-color: #d2d6da;
+            transform: translateY(1px);
+        }
+        .key-btn-dark {
+            background-color: #dadce0;
+            color: #3c4043;
+            font-weight: 600;
+        }
+        .key-btn-dark:hover {
+            background-color: #bdc1c6;
+        }
+        .key-btn-blue {
+            background-color: #2b72ee;
+            color: white;
+            border-color: #1a62e0;
+            font-weight: 600;
+        }
+        .key-btn-blue:hover {
+            background-color: #1a62e0;
+        }
+
+        /* Cosmos Audio Trace Panel Button Styling */
+        .audio-btn {
+            background-color: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #3c4043;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .audio-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #bdc1c6;
+        }
+        .audio-btn:active {
+            background-color: #e8eaed;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dadce0;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bdc1c6;
+        }
+
+        .color-popover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid #dadce0;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-100 h-screen w-screen flex flex-col font-sans text-slate-800">
 
-<div class="workspaceShell">
-    <div class="appToolbar">
-        <div class="toolbarBrand">Cosmos</div>
-        <input type="text" class="fileTitle" value="제목 없는 그래프">
+    <!-- 1. TOP NAVBAR -->
+    <header class="bg-[#1c2836] text-white h-12 px-3 flex items-center justify-between z-30 shrink-0 select-none">
+        <!-- Left Title and Save -->
+        <div class="flex items-center space-x-2">
+            <button onclick="showToast('폴더 목록을 불러왔습니다.')" class="p-1.5 hover:bg-slate-700/60 rounded text-slate-300 hover:text-white transition">
+                <i class="fa-regular fa-folder text-base"></i>
+            </button>
+            <input id="graph-title-input" type="text" value="Cosmos 그래프" 
+                   class="bg-transparent text-slate-100 text-sm font-medium px-2 py-1 rounded hover:bg-slate-700/40 focus:bg-slate-800 focus:outline-none border border-transparent focus:border-slate-600 transition w-36 sm:w-48">
+            <button onclick="saveGraphState()" class="bg-[#2b72ee] hover:bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition shadow-sm">
+                저장
+            </button>
+        </div>
+
+        <!-- Center Logo -->
+        <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center cursor-pointer" onclick="resetView()">
+            <span class="text-xl font-bold tracking-tight text-white font-serif italic">cosmos</span>
+        </div>
+
+        <!-- Right User Actions -->
+        <div class="flex items-center space-x-1 sm:space-x-2">
+            <button onclick="openModal('login-modal')" class="hidden sm:inline-block text-xs font-medium px-3 py-1.5 rounded hover:bg-slate-700/60 transition">
+                로그인
+            </button>
+            <button onclick="openModal('signup-modal')" class="bg-[#2b72ee] hover:bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition shadow-sm">
+                회원가입
+            </button>
+            <div class="h-4 w-[1px] bg-slate-600 mx-1"></div>
+            <button onclick="openModal('share-modal')" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60 rounded transition" title="공유">
+                <i class="fa-solid fa-share-nodes text-sm"></i>
+            </button>
+            <button onclick="openModal('help-modal')" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60 rounded transition" title="도움말">
+                <i class="fa-regular fa-circle-question text-sm"></i>
+            </button>
+            <button onclick="toggleAngleMode()" id="btn-lang-toggle" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60 rounded transition text-xs font-semibold" title="각도 단위 전환 (라디안/각도)">
+                Rad
+            </button>
+            <button onclick="openModal('settings-modal')" class="p-1.5 text-slate-300 hover:text-white hover:bg-slate-700/60 rounded transition" title="설정">
+                <i class="fa-solid fa-wrench text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="flex-1 flex relative overflow-hidden">
+
+        <!-- 2. LEFT SIDEBAR (EXPRESSIONS PANEL) -->
+        <aside id="sidebar-panel" class="w-[340px] sm:w-[380px] bg-white border-r border-slate-300 flex flex-col z-20 transition-all duration-200 shrink-0">
+
+            <!-- Sidebar Toolbar Header -->
+            <div class="h-10 border-b border-slate-200 px-3 flex items-center justify-between bg-slate-50 shrink-0 relative">
+                <div class="flex items-center space-x-1">
+                    <!-- Add Item Menu Dropdown -->
+                    <button id="btn-add-menu" onclick="toggleAddMenu()" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 rounded transition" title="항목 추가">
+                        <i class="fa-solid fa-plus text-base"></i>
+                    </button>
+                    <!-- History Undo/Redo -->
+                    <button onclick="undo()" id="btn-undo" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded transition" title="되돌리기">
+                        <i class="fa-solid fa-rotate-left text-xs"></i>
+                    </button>
+                    <button onclick="redo()" id="btn-redo" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 rounded transition" title="다시 실행">
+                        <i class="fa-solid fa-rotate-right text-xs"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-1">
+                    <button onclick="showToast('편집 모드가 활성화되었습니다.')" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 rounded transition" title="수식 목록 편집">
+                        <i class="fa-solid fa-gear text-sm"></i>
+                    </button>
+                    <button id="btn-collapse-sidebar" class="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70 rounded transition" title="패널 숨기기">
+                        <i class="fa-solid fa-angles-left text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Add Menu Popover -->
+                <div id="add-menu-popover" class="hidden absolute top-9 left-2 bg-white border border-slate-300 rounded-lg shadow-xl z-50 py-1 w-40 text-sm">
+                    <button onclick="addExpression(''); hideAddMenu()" class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center space-x-2">
+                        <i class="fa-solid fa-calculator text-blue-600 text-xs"></i>
+                        <span>수식 (Expression)</span>
+                    </button>
+                    <button onclick="addTableItem(); hideAddMenu()" class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center space-x-2">
+                        <i class="fa-solid fa-table text-emerald-600 text-xs"></i>
+                        <span>표 (Table)</span>
+                    </button>
+                    <button onclick="addNoteItem(); hideAddMenu()" class="w-full text-left px-3 py-1.5 hover:bg-slate-100 flex items-center space-x-2">
+                        <i class="fa-regular fa-note-sticky text-amber-600 text-xs"></i>
+                        <span>주석 (Note)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Expressions Scrollable List -->
+            <div id="expressions-list" class="flex-1 overflow-y-auto divide-y divide-slate-100">
+                <!-- Dynamically populated math items -->
+            </div>
+        </aside>
+
+        <!-- Sidebar Re-open Floating Button -->
+        <button id="btn-expand-sidebar" class="hidden absolute top-3 left-3 z-30 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 p-2 rounded-lg shadow-md transition">
+            <i class="fa-solid fa-angles-right text-sm"></i>
+        </button>
+
+        <!-- 3. GRAPH CANVAS ENGINE -->
+        <main class="flex-1 relative bg-white overflow-hidden flex flex-col">
+            <canvas id="graph-canvas" class="w-full h-full block cursor-crosshair"></canvas>
+
+            <!-- Top Right Graph Controls -->
+            <div class="absolute top-3 right-3 flex flex-col bg-white border border-slate-300 rounded-lg shadow-md overflow-hidden z-10 text-slate-700">
+                <button onclick="openModal('settings-modal')" class="p-2.5 hover:bg-slate-100 border-b border-slate-200 transition" title="그래프 설정">
+                    <i class="fa-solid fa-wrench text-xs"></i>
+                </button>
+                <button onclick="zoomIn()" class="p-2.5 hover:bg-slate-100 border-b border-slate-200 transition" title="확대">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                </button>
+                <button onclick="zoomOut()" class="p-2.5 hover:bg-slate-100 border-b border-slate-200 transition" title="축소">
+                    <i class="fa-solid fa-minus text-xs"></i>
+                </button>
+                <button onclick="resetView()" class="p-2.5 hover:bg-slate-100 transition" title="기본 보기로 돌아가기">
+                    <i class="fa-solid fa-house text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Hover / Pinned Point Label Overlay -->
+            <div id="point-tooltip" class="pointer-events-none absolute hidden bg-slate-900/90 text-white text-xs px-2.5 py-1 rounded shadow-lg z-20 font-mono -translate-x-1/2 -translate-y-full mb-2">
+                <span id="tooltip-coords">(0, 0)</span>
+            </div>
+        </main>
     </div>
-    
-    <div class="workspace">
-        <div class="expressionPane">
-            <div class="expressionHeader">수식 목록</div>
-            <div class="expressionList">
-                <div class="expressionItem">
-                    <div class="colorDot"></div>
-                    <input type="text" id="expr1" class="expressionInput" value="Math.sin(x)">
-                </div>
-                <div class="expressionItem">
-                    <div class="colorDot" style="background:#2d9cdb;"></div>
-                    <input type="text" id="expr2" class="expressionInput" value="0.5 * x">
-                </div>
+
+    <!-- 4. BOTTOM KEYPAD & AUDIO TRACE CONTROLS PANEL -->
+    <div id="bottom-panel" class="bg-[#e8eaed] border-t border-slate-300 z-30 flex flex-col shrink-0 select-none shadow-2xl transition-all duration-200">
+
+        <!-- Tab Header Selector: Math Keyboard vs Audio Trace -->
+        <div class="h-8 bg-[#dadce0] px-3 flex items-center justify-between text-xs text-slate-600 border-b border-slate-300">
+            <div class="flex items-center space-x-2">
+                <button id="tab-btn-keypad" onclick="switchBottomTab('keypad')" class="px-3 py-1 font-semibold rounded bg-white text-slate-800 shadow-sm transition">
+                    가상 키보드
+                </button>
+                <button id="tab-btn-audio" onclick="switchBottomTab('audio')" class="px-3 py-1 font-semibold rounded hover:bg-slate-200/80 text-slate-700 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-volume-high text-xs text-blue-600"></i>
+                    <span>오디오 추적 (Audio Trace)</span>
+                </button>
+            </div>
+            <button id="btn-hide-bottom-panel" class="hover:text-slate-900 transition p-1">
+                <i class="fa-solid fa-chevron-down text-xs"></i>
+            </button>
+        </div>
+
+        <!-- TAB 1: VIRTUAL MATH KEYBOARD -->
+        <div id="keypad-tab-content" class="p-2 max-w-5xl mx-auto w-full grid grid-cols-12 gap-1.5 h-44 sm:h-48 text-sm">
+            <!-- Col 1-4: Variables & Math Symbols -->
+            <div class="col-span-4 grid grid-cols-4 gap-1">
+                <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
+                <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
+                <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
+                <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
+
+                <button class="key-btn" onclick="insertKey('(')">(</button>
+                <button class="key-btn" onclick="insertKey(')')">)</button>
+                <button class="key-btn" onclick="insertKey('<')">&lt;</button>
+                <button class="key-btn" onclick="insertKey('>')">&gt;</button>
+
+                <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
+                <button class="key-btn" onclick="insertKey(',')">,</button>
+                <button class="key-btn" onclick="insertKey('<=')">≤</button>
+                <button class="key-btn" onclick="insertKey('>=')">≥</button>
+
+                <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
+                <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
+                <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
+                <button class="key-btn" onclick="insertKey('pi')">π</button>
+            </div>
+
+            <!-- Col 5-8: Standard Numpad -->
+            <div class="col-span-4 grid grid-cols-4 gap-1">
+                <button class="key-btn font-bold bg-white" onclick="insertKey('7')">7</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('8')">8</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('9')">9</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('/')">÷</button>
+
+                <button class="key-btn font-bold bg-white" onclick="insertKey('4')">4</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('5')">5</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('6')">6</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('*')">×</button>
+
+                <button class="key-btn font-bold bg-white" onclick="insertKey('1')">1</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('2')">2</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('3')">3</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('-')">-</button>
+
+                <button class="key-btn font-bold bg-white" onclick="insertKey('0')">0</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('.')">.</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('=')">=</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('+')">+</button>
+            </div>
+
+            <!-- Col 9-12: Functions & Actions -->
+            <div class="col-span-4 grid grid-cols-3 gap-1">
+                <button class="key-btn key-btn-dark" onclick="insertKey('sin(')">sin</button>
+                <button class="key-btn key-btn-dark" onclick="moveCursor(-1)"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                <button class="key-btn key-btn-dark" onclick="moveCursor(1)"><i class="fa-solid fa-arrow-right text-xs"></i></button>
+
+                <button class="key-btn" onclick="insertKey('cos(')">cos</button>
+                <button class="key-btn" onclick="insertKey('tan(')">tan</button>
+                <button class="key-btn key-btn-dark" onclick="handleBackspace()"><i class="fa-solid fa-delete-left text-sm"></i></button>
+
+                <button class="key-btn" onclick="insertKey('log(')">log</button>
+                <button class="key-btn" onclick="insertKey('ln(')">ln</button>
+                <button class="key-btn key-btn-blue row-span-2" onclick="handleEnter()">↵</button>
+
+                <button class="key-btn" onclick="insertKey('e')"><i>e</i></button>
+                <button class="key-btn" onclick="insertKey('abs(')">abs</button>
             </div>
         </div>
-        
-        <div class="graphWorkspace">
-            <div class="graphCanvasArea">
-                <canvas id="graphCanvas"></canvas>
-                
-                <!-- 데스모스 스타일 가상 키패드 -->
-                <div class="keypad">
-                    <button onclick="insertText('x')">x</button>
-                    <button onclick="insertText('y')">y</button>
-                    <button onclick="insertText('+')">+</button>
-                    <button onclick="insertText('-')">-</button>
-                    <button onclick="insertText('*')">×</button>
-                    <button onclick="insertText('/')">÷</button>
-                    <button onclick="insertText('Math.sin(x)')">sin</button>
-                    <button onclick="insertText('Math.cos(x)')">cos</button>
-                    <button onclick="insertText('Math.pow(x, 2)')">x²</button>
-                    <button onclick="insertText('Math.sqrt(x)')">√</button>
-                </div>
-            </div>
-            
-            <div class="audioToolbar">
-                <button onclick="toggleAudio()">🎵 그래프 음악 재생 (Audio Trace)</button>
-                <span id="audioStatus" style="font-size:12px; color:#666;">정지됨</span>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-const canvas = document.getElementById('graphCanvas');
-const ctx = canvas.getContext('2d');
-
-let scale = 40;
-let offsetX = 0;
-let offsetY = 0;
-let isDragging = false;
-let startX, startY;
-
-function resizeCanvas() {
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
-    drawGrid();
-}
-
-function drawGrid() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerX = width / 2 + offsetX;
-    const centerY = height / 2 + offsetY;
-
-    // 격자 그리기
-    ctx.strokeStyle = '#eeeef2';
-    ctx.lineWidth = 1;
-
-    for (let x = centerX % scale; x < width; x += scale) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
-    }
-    for (let y = centerY % scale; y < height; y += scale) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
-    }
-
-    // 축 그리기
-    ctx.strokeStyle = '#d0d2d8';
-    ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(width, centerY); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(centerX, 0); ctx.lineTo(centerX, height); ctx.stroke();
-
-    // 함수 그래프 그리기
-    drawFunction(document.getElementById('expr1').value, '#7a5af8');
-    drawFunction(document.getElementById('expr2').value, '#2d9cdb');
-}
-
-function drawFunction(expr, color) {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-
-    const width = canvas.width;
-    const height = canvas.height;
-    const centerX = width / 2 + offsetX;
-    const centerY = height / 2 + offsetY;
-
-    let first = true;
-    for (let px = 0; px < width; px++) {
-        let x = (px - centerX) / scale;
-        let y;
-        try {
-            y = eval(expr);
-        } catch (e) {
-            y = 0;
-        }
-        let py = centerY - y * scale;
-
-        if (first) {
-            ctx.moveTo(px, py);
-            first = false;
-        } else {
-            ctx.lineTo(px, py);
-        }
-    }
-    ctx.stroke();
-}
-
-// 마우스 드래그로 화면 이동 (Pan)
-canvas.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-});
-
-window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    offsetX += e.clientX - startX;
-    offsetY += e.clientY - startY;
-    startX = e.clientX;
-    startY = e.clientY;
-    drawGrid();
-});
-
-window.addEventListener('mouseup', () => { isDragging = false; });
-
-// 마우스 휠로 확대/축소 (Zoom)
-canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if (e.deltaY < 0) {
-        scale *= 1.1;
-    } else {
-        scale /= 1.1;
-    }
-    drawGrid();
-}, { passive: false });
-
-document.getElementById('expr1').addEventListener('input', drawGrid);
-document.getElementById('expr2').addEventListener('input', drawGrid);
-
-function insertText(val) {
-    const activeInput = document.activeElement;
-    if (activeInput && activeInput.classList.contains('expressionInput')) {
-        const start = activeInput.selectionStart;
-        const end = activeInput.selectionEnd;
-        const text = activeInput.value;
-        activeInput.value = text.substring(0, start) + val + text.substring(end);
-        activeInput.selectionStart = activeInput.selectionEnd = start + val.length;
-        activeInput.focus();
-        drawGrid();
-    }
-}
-
-let isPlaying = false;
-function toggleAudio() {
-    isPlaying = !isPlaying;
-    document.getElementById('audioStatus').innerText = isPlaying ? "🎵 재생 중..." : "정지됨";
-    if (isPlaying) {
-        // 간단한 웹 오디오 API 사운드 연동 시뮬레이션
-        setTimeout(() => {
-            if(isPlaying) toggleAudio();
-        }, 5000);
-    }
-}
-
-window.addEventListener('resize', resizeCanvas);
-window.onload = resizeCanvas;
-</script>
-
-</body>
-</html>
-"""
-
-components.html(HTML, height=750, scrolling=True)
