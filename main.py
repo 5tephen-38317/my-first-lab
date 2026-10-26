@@ -1922,8 +1922,8 @@ HTML = r"""<!DOCTYPE html>
 
         // Cloud account and per-user data storage (Supabase).
         // Configure these two values using your own Supabase project before deployment.
-        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const SUPABASE_URL = 'https://eqiozrbihsqcttaskdwg.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_HU44ZRw5dEA7srhdCB3-Og_NBD975Ik';
         const cloudConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
         const cloud = cloudConfigured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
         let cosmosUser = null;
