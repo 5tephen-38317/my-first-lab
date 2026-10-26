@@ -24,12 +24,30 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# CLOUD SYNC SETUP (required for cross-device accounts):
+# 1) Create a Supabase project and copy Project URL + anon/public key.
+# 2) Replace SUPABASE_URL and SUPABASE_ANON_KEY in the HTML JavaScript below.
+# 3) Run this SQL in Supabase SQL Editor:
+# create table public.cosmos_workspaces (
+#   user_id uuid primary key references auth.users(id) on delete cascade,
+#   payload jsonb not null default '{}'::jsonb,
+#   updated_at timestamptz not null default now()
+# );
+# alter table public.cosmos_workspaces enable row level security;
+# create policy "Users can read own workspace" on public.cosmos_workspaces
+#   for select to authenticated using (auth.uid() = user_id);
+# create policy "Users can insert own workspace" on public.cosmos_workspaces
+#   for insert to authenticated with check (auth.uid() = user_id);
+# create policy "Users can update own workspace" on public.cosmos_workspaces
+#   for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
 HTML = r"""<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cosmos | 그래핑 계산기</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Math.js CDN -->
@@ -1554,7 +1572,7 @@ HTML = r"""<!DOCTYPE html>
             if(state.audio.isPlaying) pauseAudioTrace();
         }
         function readMusicPreset() {
-            return { bpm:document.getElementById('music-bpm').value, genre:document.getElementById('music-genre').value, key:document.getElementById('music-key').value, scale:document.getElementById('music-scale').value, parts:['melody','bass','chords','arp','drums'].reduce((o,k)=>{o[k]=document.getElementById('part-'+k).checked;return o;},{}), waveform:document.getElementById('audio-waveform').value };
+            const settings = { bpm:document.getElementById('music-bpm').value, genre:document.getElementById('music-genre').value, key:document.getElementById('music-key').value, scale:document.getElementById('music-scale').value, parts:['melody','bass','chords','arp','drums'].reduce((o,k)=>{o[k]=document.getElementById('part-'+k).checked;return o;},{}), waveform:document.getElementById('audio-waveform').value }; localStorage.setItem('cosmos_music_settings', JSON.stringify(settings)); scheduleCloudSave(); return settings;
         }
         function refreshMusicLibrary() {
             const select=document.getElementById('music-library-select'); if(!select) return;
@@ -1567,7 +1585,7 @@ HTML = r"""<!DOCTYPE html>
             const name=document.getElementById('music-song-name').value.trim() || '내 곡 '+new Date().toLocaleString('ko-KR');
             let songs=[];try{songs=JSON.parse(localStorage.getItem('cosmosMusicLibrary')||'[]')}catch(_){}
             songs.push({name,settings:readMusicPreset()});
-            try{localStorage.setItem('cosmosMusicLibrary',JSON.stringify(songs));refreshMusicLibrary();document.getElementById('music-status').textContent='「'+name+'」 저장 완료';}
+            try{localStorage.setItem('cosmosMusicLibrary',JSON.stringify(songs));refreshMusicLibrary();scheduleCloudSave();document.getElementById('music-status').textContent='「'+name+'」 저장 완료';}
             catch(_){document.getElementById('music-status').textContent='브라우저 저장 공간에 접근할 수 없습니다.';}
         }
         function loadMusicPreset() {
@@ -1878,7 +1896,8 @@ HTML = r"""<!DOCTYPE html>
 
         function saveGraphState() {
             localStorage.setItem('cosmos_saved_graph', JSON.stringify(state.items));
-            showToast('그래프가 브라우저에 저장되었습니다!');
+            saveCloudWorkspace(true);
+            showToast('그래프 저장 요청을 완료했습니다.');
         }
 
         /**
@@ -1901,37 +1920,34 @@ HTML = r"""<!DOCTYPE html>
             document.getElementById('modal-backdrop').classList.add('hidden');
         }
 
-        // Demo authentication: accounts are local to this browser, not a secure server account system.
-        const COSMOS_USERS_KEY = 'cosmos_demo_users_v1';
-        const COSMOS_SESSION_KEY = 'cosmos_demo_session_v1';
-
-        function readCosmosUsers() {
-            try { return JSON.parse(localStorage.getItem(COSMOS_USERS_KEY) || '{}'); }
-            catch (err) { return {}; }
-        }
-
-        async function hashCosmosPassword(password) {
-            if (!window.crypto || !crypto.subtle) throw new Error('현재 브라우저에서 안전한 비밀번호 해시 기능을 사용할 수 없습니다.');
-            const bytes = new TextEncoder().encode(password);
-            const digest = await crypto.subtle.digest('SHA-256', bytes);
-            return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // Cloud account and per-user data storage (Supabase).
+        // Configure these two values using your own Supabase project before deployment.
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const cloudConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
+        const cloud = cloudConfigured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        let cosmosUser = null;
+        let cloudSaveTimer = null;
 
         function showAuthError(id, message) {
             const el = document.getElementById(id);
             el.textContent = message;
             el.classList.remove('hidden');
         }
-
         function clearAuthError(id) {
             const el = document.getElementById(id);
             el.textContent = '';
             el.classList.add('hidden');
         }
+        function requireCloud(id) {
+            if (cloud) return true;
+            showAuthError(id, '계정 동기화를 사용하려면 Supabase 프로젝트 URL과 anon key 설정이 필요합니다.');
+            return false;
+        }
 
         async function signupAccount(event) {
-            event.preventDefault();
-            clearAuthError('signup-error');
+            event.preventDefault(); clearAuthError('signup-error');
+            if (!requireCloud('signup-error')) return;
             const name = document.getElementById('signup-name').value.trim();
             const email = document.getElementById('signup-email').value.trim().toLowerCase();
             const password = document.getElementById('signup-password').value;
@@ -1939,45 +1955,73 @@ HTML = r"""<!DOCTYPE html>
             if (!name || !email) return showAuthError('signup-error', '이름과 이메일을 입력해 주세요.');
             if (password.length < 8) return showAuthError('signup-error', '비밀번호는 8자 이상이어야 합니다.');
             if (password !== confirm) return showAuthError('signup-error', '비밀번호 확인이 일치하지 않습니다.');
-            const users = readCosmosUsers();
-            if (users[email]) return showAuthError('signup-error', '이미 가입된 이메일입니다. 로그인해 주세요.');
             try {
-                users[email] = { name, email, passwordHash: await hashCosmosPassword(password), createdAt: new Date().toISOString() };
-                localStorage.setItem(COSMOS_USERS_KEY, JSON.stringify(users));
-                localStorage.setItem(COSMOS_SESSION_KEY, JSON.stringify({ name, email }));
-                updateAccountUI();
-                closeModal();
+                const { data, error } = await cloud.auth.signUp({ email, password, options: { data: { display_name: name } } });
+                if (error) throw error;
+                if (data.session) { cosmosUser = data.user; await afterCloudLogin(name, email); }
+                else { showAuthError('signup-error', '가입 요청을 보냈습니다. 이메일 인증을 완료한 뒤 로그인해 주세요.'); }
                 document.getElementById('signup-password').value = '';
                 document.getElementById('signup-confirm').value = '';
-                showToast('회원가입이 완료되었습니다.');
-            } catch (err) {
-                showAuthError('signup-error', err.message || '계정 저장에 실패했습니다. 브라우저 저장 설정을 확인해 주세요.');
-            }
+            } catch (err) { showAuthError('signup-error', err.message || '회원가입에 실패했습니다.'); }
         }
 
         async function loginAccount(event) {
-            event.preventDefault();
-            clearAuthError('login-error');
+            event.preventDefault(); clearAuthError('login-error');
+            if (!requireCloud('login-error')) return;
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
-            const users = readCosmosUsers();
-            if (!users[email]) return showAuthError('login-error', '가입된 계정을 찾을 수 없습니다. 이메일을 확인하거나 회원가입해 주세요.');
             try {
-                const hash = await hashCosmosPassword(password);
-                if (hash !== users[email].passwordHash) return showAuthError('login-error', '이메일 또는 비밀번호가 올바르지 않습니다.');
-                localStorage.setItem(COSMOS_SESSION_KEY, JSON.stringify({ name: users[email].name, email }));
-                updateAccountUI();
-                closeModal();
+                const { data, error } = await cloud.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                cosmosUser = data.user;
+                const name = data.user.user_metadata?.display_name || email.split('@')[0];
+                await afterCloudLogin(name, email);
                 document.getElementById('login-password').value = '';
-                showToast(`${users[email].name}님, 로그인되었습니다.`);
-            } catch (err) {
-                showAuthError('login-error', err.message || '로그인 처리 중 오류가 발생했습니다.');
-            }
+            } catch (err) { showAuthError('login-error', '로그인 실패: 이메일 또는 비밀번호를 확인해 주세요.'); }
         }
 
-        function updateAccountUI() {
-            let session = null;
-            try { session = JSON.parse(localStorage.getItem(COSMOS_SESSION_KEY) || 'null'); } catch (err) {}
+        async function afterCloudLogin(name, email) {
+            updateAccountUI({ name, email });
+            closeModal();
+            await loadCloudWorkspace();
+            showToast(`${name}님, 로그인되었습니다. 클라우드 작업을 불러왔습니다.`);
+        }
+
+        function workspacePayload() {
+            let songs = []; try { songs = JSON.parse(localStorage.getItem('cosmosMusicLibrary') || '[]'); } catch (_) {}
+            let settings = {}; try { settings = JSON.parse(localStorage.getItem('cosmos_music_settings') || '{}'); } catch (_) {}
+            return { graph_items: state.items || [], music_library: songs, music_settings: settings, saved_at: new Date().toISOString() };
+        }
+
+        async function saveCloudWorkspace(showMessage = false) {
+            if (!cloud || !cosmosUser) { if (showMessage) showToast('클라우드 저장을 하려면 먼저 로그인하세요.'); return; }
+            const payload = workspacePayload();
+            const { error } = await cloud.from('cosmos_workspaces').upsert({ user_id: cosmosUser.id, payload, updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
+            if (error) { console.error('Cloud save failed:', error); if (showMessage) showToast('클라우드 저장 실패: Supabase 테이블/RLS 설정을 확인하세요.'); return; }
+            if (showMessage) showToast('그래프와 음악 작업을 계정에 저장했습니다.');
+        }
+
+        function scheduleCloudSave() {
+            if (!cosmosUser || !cloud) return;
+            clearTimeout(cloudSaveTimer);
+            cloudSaveTimer = setTimeout(() => saveCloudWorkspace(false), 900);
+        }
+
+        async function loadCloudWorkspace() {
+            if (!cloud || !cosmosUser) return;
+            const { data, error } = await cloud.from('cosmos_workspaces').select('payload').eq('user_id', cosmosUser.id).maybeSingle();
+            if (error) { console.error('Cloud load failed:', error); showToast('저장 데이터를 불러오지 못했습니다. Supabase 테이블/RLS 설정을 확인하세요.'); return; }
+            if (!data?.payload) return;
+            const payload = data.payload;
+            if (Array.isArray(payload.graph_items)) { state.items = payload.graph_items; renderExpressionList(); render(); }
+            if (Array.isArray(payload.music_library)) { localStorage.setItem('cosmosMusicLibrary', JSON.stringify(payload.music_library)); refreshMusicLibrary(); }
+            if (payload.music_settings) localStorage.setItem('cosmos_music_settings', JSON.stringify(payload.music_settings));
+        }
+
+        function updateAccountUI(explicitSession = null) {
+            let session = explicitSession;
+            if (!session && cosmosUser) session = { name: cosmosUser.user_metadata?.display_name || cosmosUser.email?.split('@')[0], email: cosmosUser.email };
+            if (!session && !cloud) session = null;
             const label = document.getElementById('account-label');
             const loginBtn = document.getElementById('login-nav-btn');
             const signupBtn = document.getElementById('signup-nav-btn');
@@ -1997,8 +2041,9 @@ HTML = r"""<!DOCTYPE html>
         }
 
         function logoutAccount() {
-            localStorage.removeItem(COSMOS_SESSION_KEY);
-            updateAccountUI();
+            if (cloud) cloud.auth.signOut().catch(console.error);
+            cosmosUser = null;
+            updateAccountUI(null);
             showToast('로그아웃되었습니다.');
         }
 
@@ -2069,6 +2114,9 @@ HTML = r"""<!DOCTYPE html>
         window.onload = function() {
             resizeCanvas();
             updateAccountUI();
+            if (cloud) cloud.auth.getSession().then(async ({ data }) => {
+                if (data.session?.user) { cosmosUser = data.session.user; await afterCloudLogin(cosmosUser.user_metadata?.display_name || cosmosUser.email.split('@')[0], cosmosUser.email); }
+            }).catch(console.error);
             // Initial Sine Graph matching screenshot
             addExpression('y = sin(x)');
             renderAudioLayerVolumes();
