@@ -319,128 +319,105 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- TAB 1: VIRTUAL MATH KEYBOARD -->
         <div id="keypad-tab-content" class="p-2 max-w-5xl mx-auto w-full grid grid-cols-12 gap-1.5 h-44 sm:h-48 text-sm">
-            <!-- TAB 1: VIRTUAL KEYBOARD -->
-<div id="keypad-tab-content"
-     class="p-2 w-full grid grid-cols-12 gap-1.5 h-44 sm:h-48 text-sm">
+            <!-- Col 1-4: Variables, Math Symbols & Full Alphabet -->
+            <div class="col-span-4 flex flex-col gap-1 min-h-0">
+                <button id="alphabet-toggle" class="key-btn key-btn-dark w-full"
+                        style="height:22px; min-height:22px; flex-shrink:0; font-size:11px;"
+                        onclick="toggleAlphabetKeyboard()">ABC 알파벳 입력</button>
 
-    <!-- ABC / 123 모드 전환 -->
-    <div class="col-span-12 grid grid-cols-2 gap-1 h-7">
-        <button id="keyboard-abc-tab"
-                onclick="switchKeyboardMode('abc')"
-                class="key-btn key-btn-dark">
-            ABC
-        </button>
-        <button id="keyboard-123-tab"
-                onclick="switchKeyboardMode('123')"
-                class="key-btn">
-            123
-        </button>
-    </div>
+                <div id="math-symbol-keys" class="flex-1 min-h-0 grid grid-cols-4 grid-rows-4 gap-1">
+                    <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
+                    <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
+                    <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
+                    <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
+                    <button class="key-btn" onclick="insertKey('(')">(</button>
+                    <button class="key-btn" onclick="insertKey(')')">)</button>
+                    <button class="key-btn" onclick="insertKey('<')">&lt;</button>
+                    <button class="key-btn" onclick="insertKey('>')">&gt;</button>
+                    <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
+                    <button class="key-btn" onclick="insertKey(',')">,</button>
+                    <button class="key-btn" onclick="insertKey('<=')">≤</button>
+                    <button class="key-btn" onclick="insertKey('>=')">≥</button>
+                    <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
+                    <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
+                    <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
+                    <button class="key-btn" onclick="insertKey('pi')">π</button>
+                </div>
 
-    <!-- ABC: 전체 QWERTY 키보드 -->
-    <div id="alphabet-keys"
-         class="col-span-12 grid grid-cols-10 grid-rows-4 gap-1 min-h-0">
+                <div id="alphabet-keys" class="hidden flex-1 min-h-0 grid grid-cols-4 grid-rows-7 gap-1">
+                    <button class="key-btn" onclick="insertKey('q')">q</button>
+                    <button class="key-btn" onclick="insertKey('w')">w</button>
+                    <button class="key-btn" onclick="insertKey('e')">e</button>
+                    <button class="key-btn" onclick="insertKey('r')">r</button>
+                    <button class="key-btn" onclick="insertKey('t')">t</button>
+                    <button class="key-btn" onclick="insertKey('y')">y</button>
+                    <button class="key-btn" onclick="insertKey('u')">u</button>
+                    <button class="key-btn" onclick="insertKey('i')">i</button>
+                    <button class="key-btn" onclick="insertKey('o')">o</button>
+                    <button class="key-btn" onclick="insertKey('p')">p</button>
+                    <button class="key-btn" onclick="insertKey('a')">a</button>
+                    <button class="key-btn" onclick="insertKey('s')">s</button>
+                    <button class="key-btn" onclick="insertKey('d')">d</button>
+                    <button class="key-btn" onclick="insertKey('f')">f</button>
+                    <button class="key-btn" onclick="insertKey('g')">g</button>
+                    <button class="key-btn" onclick="insertKey('h')">h</button>
+                    <button class="key-btn" onclick="insertKey('j')">j</button>
+                    <button class="key-btn" onclick="insertKey('k')">k</button>
+                    <button class="key-btn" onclick="insertKey('l')">l</button>
+                    <button class="key-btn" onclick="insertKey('z')">z</button>
+                    <button class="key-btn" onclick="insertKey('x')">x</button>
+                    <button class="key-btn" onclick="insertKey('c')">c</button>
+                    <button class="key-btn" onclick="insertKey('v')">v</button>
+                    <button class="key-btn" onclick="insertKey('b')">b</button>
+                    <button class="key-btn" onclick="insertKey('n')">n</button>
+                    <button class="key-btn" onclick="insertKey('m')">m</button>
+                    <button class="key-btn key-btn-dark col-span-2" onclick="insertKey('_')">_ 밑줄</button>
+                </div>
+            </div>
 
-        <!-- 첫째 줄 -->
-        <button class="key-btn" onclick="insertKey('q')">q</button>
-        <button class="key-btn" onclick="insertKey('w')">w</button>
-        <button class="key-btn" onclick="insertKey('e')">e</button>
-        <button class="key-btn" onclick="insertKey('r')">r</button>
-        <button class="key-btn" onclick="insertKey('t')">t</button>
-        <button class="key-btn" onclick="insertKey('y')">y</button>
-        <button class="key-btn" onclick="insertKey('u')">u</button>
-        <button class="key-btn" onclick="insertKey('i')">i</button>
-        <button class="key-btn" onclick="insertKey('o')">o</button>
-        <button class="key-btn" onclick="insertKey('p')">p</button>
+            <!-- Col 5-8: Standard Numpad -->
+            <div class="col-span-4 grid grid-cols-4 gap-1">
+                <button class="key-btn font-bold bg-white" onclick="insertKey('7')">7</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('8')">8</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('9')">9</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('/')">÷</button>
 
-        <!-- 둘째 줄 -->
-        <button class="key-btn col-span-1" onclick="insertKey('a')">a</button>
-        <button class="key-btn" onclick="insertKey('s')">s</button>
-        <button class="key-btn" onclick="insertKey('d')">d</button>
-        <button class="key-btn" onclick="insertKey('f')">f</button>
-        <button class="key-btn" onclick="insertKey('g')">g</button>
-        <button class="key-btn" onclick="insertKey('h')">h</button>
-        <button class="key-btn" onclick="insertKey('j')">j</button>
-        <button class="key-btn" onclick="insertKey('k')">k</button>
-        <button class="key-btn" onclick="insertKey('l')">l</button>
-        <button class="key-btn key-btn-dark" onclick="handleBackspace()">⌫</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('4')">4</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('5')">5</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('6')">6</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('*')">×</button>
 
-        <!-- 셋째 줄 -->
-        <button class="key-btn" onclick="insertKey('z')">z</button>
-        <button class="key-btn" onclick="insertKey('x')">x</button>
-        <button class="key-btn" onclick="insertKey('c')">c</button>
-        <button class="key-btn" onclick="insertKey('v')">v</button>
-        <button class="key-btn" onclick="insertKey('b')">b</button>
-        <button class="key-btn" onclick="insertKey('n')">n</button>
-        <button class="key-btn" onclick="insertKey('m')">m</button>
-        <button class="key-btn" onclick="insertKey('_')">_</button>
-        <button class="key-btn" onclick="moveCursor(-1)">←</button>
-        <button class="key-btn" onclick="moveCursor(1)">→</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('1')">1</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('2')">2</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('3')">3</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('-')">-</button>
 
-        <!-- 넷째 줄 -->
-        <button class="key-btn key-btn-dark col-span-2"
-                onclick="insertKey('(')">(</button>
-        <button class="key-btn key-btn-dark col-span-2"
-                onclick="insertKey(')')">)</button>
-        <button class="key-btn col-span-4"
-                onclick="insertKey(' ')">Space</button>
-        <button class="key-btn key-btn-blue col-span-2"
-                onclick="handleEnter()">Enter ↵</button>
-    </div>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('0')">0</button>
+                <button class="key-btn font-bold bg-white" onclick="insertKey('.')">.</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('=')">=</button>
+                <button class="key-btn key-btn-dark text-base" onclick="insertKey('+')">+</button>
+            </div>
 
-    <!-- 123: 숫자 및 수학 기호 키보드 -->
-    <div id="math-symbol-keys"
-         class="hidden col-span-12 grid grid-cols-10 grid-rows-4 gap-1 min-h-0">
+            <!-- Col 9-12: Functions & Actions -->
+            <div class="col-span-4 grid grid-cols-3 gap-1">
+                <button class="key-btn key-btn-dark" onclick="insertKey('sin(')">sin</button>
+                <button class="key-btn key-btn-dark" onclick="moveCursor(-1)"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                <button class="key-btn key-btn-dark" onclick="moveCursor(1)"><i class="fa-solid fa-arrow-right text-xs"></i></button>
 
-        <!-- 첫째 줄 -->
-        <button class="key-btn" onclick="insertKey('7')">7</button>
-        <button class="key-btn" onclick="insertKey('8')">8</button>
-        <button class="key-btn" onclick="insertKey('9')">9</button>
-        <button class="key-btn" onclick="insertKey('/')">÷</button>
-        <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
-        <button class="key-btn" onclick="insertKey('^2')">x²</button>
-        <button class="key-btn" onclick="insertKey('^')">xʸ</button>
-        <button class="key-btn" onclick="insertKey('pi')">π</button>
-        <button class="key-btn" onclick="insertKey('e')">e</button>
-        <button class="key-btn key-btn-dark" onclick="handleBackspace()">⌫</button>
+                <button class="key-btn" onclick="insertKey('cos(')">cos</button>
+                <button class="key-btn" onclick="insertKey('tan(')">tan</button>
+                <button class="key-btn key-btn-dark" onclick="handleBackspace()"><i class="fa-solid fa-delete-left text-sm"></i></button>
 
-        <!-- 둘째 줄 -->
-        <button class="key-btn" onclick="insertKey('4')">4</button>
-        <button class="key-btn" onclick="insertKey('5')">5</button>
-        <button class="key-btn" onclick="insertKey('6')">6</button>
-        <button class="key-btn" onclick="insertKey('*')">×</button>
-        <button class="key-btn" onclick="insertKey('(')">(</button>
-        <button class="key-btn" onclick="insertKey(')')">)</button>
-        <button class="key-btn" onclick="insertKey('<')">&lt;</button>
-        <button class="key-btn" onclick="insertKey('>')">&gt;</button>
-        <button class="key-btn" onclick="insertKey('<=')">≤</button>
-        <button class="key-btn" onclick="insertKey('>=')">≥</button>
+                <button class="key-btn" onclick="insertKey('log(')">log</button>
+                <button class="key-btn" onclick="insertKey('ln(')">ln</button>
+                <button class="key-btn key-btn-blue row-span-2" onclick="handleEnter()">↵</button>
 
-        <!-- 셋째 줄 -->
-        <button class="key-btn" onclick="insertKey('1')">1</button>
-        <button class="key-btn" onclick="insertKey('2')">2</button>
-        <button class="key-btn" onclick="insertKey('3')">3</button>
-        <button class="key-btn" onclick="insertKey('-')">−</button>
-        <button class="key-btn" onclick="insertKey('sin(')">sin</button>
-        <button class="key-btn" onclick="insertKey('cos(')">cos</button>
-        <button class="key-btn" onclick="insertKey('tan(')">tan</button>
-        <button class="key-btn" onclick="insertKey('log(')">log</button>
-        <button class="key-btn" onclick="insertKey('ln(')">ln</button>
-        <button class="key-btn" onclick="insertKey('abs(')">abs</button>
+                <button class="key-btn" onclick="insertKey('e')"><i>e</i></button>
+                <button class="key-btn" onclick="insertKey('abs(')">abs</button>
+            </div>
+        </div>
 
-        <!-- 넷째 줄 -->
-        <button class="key-btn" onclick="insertKey('0')">0</button>
-        <button class="key-btn" onclick="insertKey('.')">.</button>
-        <button class="key-btn" onclick="insertKey(',')">,</button>
-        <button class="key-btn" onclick="insertKey('+')">+</button>
-        <button class="key-btn" onclick="insertKey('|')">|x|</button>
-        <button class="key-btn" onclick="insertKey('=')">=</button>
-        <button class="key-btn" onclick="moveCursor(-1)">←</button>
-        <button class="key-btn" onclick="moveCursor(1)">→</button>
-        <button class="key-btn key-btn-blue col-span-2"
-                onclick="handleEnter()">Enter ↵</button>
-    </div>
-</div>
+        <!-- TAB 2: COSMOS AUDIO TRACE PANEL -->
         <div id="audio-tab-content" class="hidden p-3 w-full flex-col space-y-3 max-h-72 overflow-y-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                 
@@ -1346,32 +1323,7 @@ HTML = r"""<!DOCTYPE html>
          * Virtual On-Screen Keypad Mode
          * 수학 기호 키패드와 알파벳 전체 키패드를 전환합니다.
          */
-        /**
- * Virtual Keyboard Mode
- * ABC와 123 키보드를 전체 영역으로 전환합니다.
- */
-function switchKeyboardMode(mode) {
-    const alphabetKeys = document.getElementById('alphabet-keys');
-    const mathKeys = document.getElementById('math-symbol-keys');
-    const abcTab = document.getElementById('keyboard-abc-tab');
-    const numberTab = document.getElementById('keyboard-123-tab');
-
-    if (!alphabetKeys || !mathKeys || !abcTab || !numberTab) return;
-
-    if (mode === 'abc') {
-        alphabetKeys.classList.remove('hidden');
-        mathKeys.classList.add('hidden');
-
-        abcTab.classList.add('key-btn-dark');
-        numberTab.classList.remove('key-btn-dark');
-    } else {
-        alphabetKeys.classList.add('hidden');
-        mathKeys.classList.remove('hidden');
-
-        abcTab.classList.remove('key-btn-dark');
-        numberTab.classList.add('key-btn-dark');
-    }
-} {
+        function toggleAlphabetKeyboard() {
             const mathKeys = document.getElementById('math-symbol-keys');
             const alphabetKeys = document.getElementById('alphabet-keys');
             const toggleButton = document.getElementById('alphabet-toggle');
