@@ -319,27 +319,60 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- TAB 1: VIRTUAL MATH KEYBOARD -->
         <div id="keypad-tab-content" class="p-2 max-w-5xl mx-auto w-full grid grid-cols-12 gap-1.5 h-44 sm:h-48 text-sm">
-            <!-- Col 1-4: Variables & Math Symbols -->
-            <div class="col-span-4 grid grid-cols-4 gap-1">
-                <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
-                <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
-                <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
-                <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
+            <!-- Col 1-4: Variables, Math Symbols & Full Alphabet -->
+            <div class="col-span-4 flex flex-col gap-1 min-h-0">
+                <button id="alphabet-toggle" class="key-btn key-btn-dark w-full"
+                        style="height:22px; min-height:22px; flex-shrink:0; font-size:11px;"
+                        onclick="toggleAlphabetKeyboard()">ABC 알파벳 입력</button>
 
-                <button class="key-btn" onclick="insertKey('(')">(</button>
-                <button class="key-btn" onclick="insertKey(')')">)</button>
-                <button class="key-btn" onclick="insertKey('<')">&lt;</button>
-                <button class="key-btn" onclick="insertKey('>')">&gt;</button>
+                <div id="math-symbol-keys" class="flex-1 min-h-0 grid grid-cols-4 grid-rows-4 gap-1">
+                    <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
+                    <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
+                    <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
+                    <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
+                    <button class="key-btn" onclick="insertKey('(')">(</button>
+                    <button class="key-btn" onclick="insertKey(')')">)</button>
+                    <button class="key-btn" onclick="insertKey('<')">&lt;</button>
+                    <button class="key-btn" onclick="insertKey('>')">&gt;</button>
+                    <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
+                    <button class="key-btn" onclick="insertKey(',')">,</button>
+                    <button class="key-btn" onclick="insertKey('<=')">≤</button>
+                    <button class="key-btn" onclick="insertKey('>=')">≥</button>
+                    <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
+                    <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
+                    <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
+                    <button class="key-btn" onclick="insertKey('pi')">π</button>
+                </div>
 
-                <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
-                <button class="key-btn" onclick="insertKey(',')">,</button>
-                <button class="key-btn" onclick="insertKey('<=')">≤</button>
-                <button class="key-btn" onclick="insertKey('>=')">≥</button>
-
-                <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
-                <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
-                <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
-                <button class="key-btn" onclick="insertKey('pi')">π</button>
+                <div id="alphabet-keys" class="hidden flex-1 min-h-0 grid grid-cols-4 grid-rows-7 gap-1">
+                    <button class="key-btn" onclick="insertKey('q')">q</button>
+                    <button class="key-btn" onclick="insertKey('w')">w</button>
+                    <button class="key-btn" onclick="insertKey('e')">e</button>
+                    <button class="key-btn" onclick="insertKey('r')">r</button>
+                    <button class="key-btn" onclick="insertKey('t')">t</button>
+                    <button class="key-btn" onclick="insertKey('y')">y</button>
+                    <button class="key-btn" onclick="insertKey('u')">u</button>
+                    <button class="key-btn" onclick="insertKey('i')">i</button>
+                    <button class="key-btn" onclick="insertKey('o')">o</button>
+                    <button class="key-btn" onclick="insertKey('p')">p</button>
+                    <button class="key-btn" onclick="insertKey('a')">a</button>
+                    <button class="key-btn" onclick="insertKey('s')">s</button>
+                    <button class="key-btn" onclick="insertKey('d')">d</button>
+                    <button class="key-btn" onclick="insertKey('f')">f</button>
+                    <button class="key-btn" onclick="insertKey('g')">g</button>
+                    <button class="key-btn" onclick="insertKey('h')">h</button>
+                    <button class="key-btn" onclick="insertKey('j')">j</button>
+                    <button class="key-btn" onclick="insertKey('k')">k</button>
+                    <button class="key-btn" onclick="insertKey('l')">l</button>
+                    <button class="key-btn" onclick="insertKey('z')">z</button>
+                    <button class="key-btn" onclick="insertKey('x')">x</button>
+                    <button class="key-btn" onclick="insertKey('c')">c</button>
+                    <button class="key-btn" onclick="insertKey('v')">v</button>
+                    <button class="key-btn" onclick="insertKey('b')">b</button>
+                    <button class="key-btn" onclick="insertKey('n')">n</button>
+                    <button class="key-btn" onclick="insertKey('m')">m</button>
+                    <button class="key-btn key-btn-dark col-span-2" onclick="insertKey('_')">_ 밑줄</button>
+                </div>
             </div>
 
             <!-- Col 5-8: Standard Numpad -->
@@ -419,12 +452,12 @@ HTML = r"""<!DOCTYPE html>
                         <div class="flex items-center justify-between"><strong class="text-sm text-slate-800">음악 만들기</strong><span class="text-[10px] text-slate-500">그래프 + 반주</span></div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-[11px]">
                             <label class="flex flex-col gap-1 text-slate-600">BPM <span id="music-bpm-value" class="font-semibold">100</span><input id="music-bpm" type="range" min="50" max="180" value="100" step="1" class="w-full accent-blue-600"></label>
-                            <label class="flex flex-col gap-1 text-slate-600">스타일<select id="music-genre" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="pop">Pop</option><option value="kpop">K-pop</option><option value="jpop">J-pop</option><option value="lofi">Lo-fi</option><option value="edm">EDM</option><option value="classic">Classic</option><option value="phonk">Phonk</option><option value="funk">Funk</option></select></label>
+                            <label class="flex flex-col gap-1 text-slate-600">곡 장르<select id="music-genre" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="pop">Pop</option><option value="kpop">K-pop</option><option value="jpop">J-pop</option><option value="lofi">Lo-fi</option><option value="edm">EDM</option><option value="house">House</option><option value="trance">Trance</option><option value="dnb">Drum &amp; Bass</option><option value="synthwave">Synthwave</option><option value="classic">Classic</option><option value="jazz">Jazz</option><option value="rock">Rock</option><option value="hiphop">Hip-Hop</option><option value="trap">Trap</option><option value="phonk">Phonk</option><option value="funk">Funk</option><option value="ambient">Ambient</option></select></label>
                             <label class="flex flex-col gap-1 text-slate-600">조성<select id="music-key" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="0">C 메이저 / A 마이너</option><option value="2">D 메이저</option><option value="4">E 메이저</option><option value="5">F 메이저</option><option value="7">G 메이저</option><option value="9">A 메이저</option></select></label>
                             <label class="flex flex-col gap-1 text-slate-600">음계<select id="music-scale" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="major">메이저</option><option value="minor">마이너</option><option value="pentatonic">펜타토닉</option><option value="chromatic">반음계</option></select></label>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs text-slate-700">
-                            <label><input type="checkbox" id="part-melody" checked> 멜로디</label><label><input type="checkbox" id="part-bass" checked> 베이스</label><label><input type="checkbox" id="part-chords" checked> 코드</label><label><input type="checkbox" id="part-arp"> 아르페지오</label><label><input type="checkbox" id="part-drums" checked> 드럼/타악기</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-slate-700">
+                            <label><input type="checkbox" id="part-melody" checked> 그래프 멜로디</label><label><input type="checkbox" id="part-bass" checked> 베이스</label><label><input type="checkbox" id="part-chords" checked> 코드</label><label><input type="checkbox" id="part-arp"> 아르페지오</label><label><input type="checkbox" id="part-drums" checked> 드럼 전체 켜기</label><label><input type="checkbox" id="part-kick" checked> 킥</label><label><input type="checkbox" id="part-snare" checked> 스네어</label><label><input type="checkbox" id="part-hihat" checked> 하이햇</label>
                         </div>
                         <div id="audio-layer-volumes" class="space-y-1 text-[11px]"></div>
                         <div class="flex flex-wrap gap-2 items-center"><input id="music-song-name" type="text" placeholder="곡 이름" class="border border-slate-300 rounded px-2 py-1 text-xs w-28"><button onclick="saveMusicPreset()" class="audio-btn px-2 py-1.5">곡 저장</button><select id="music-library-select" class="border border-slate-300 rounded px-2 py-1 text-xs bg-white"><option value="">저장한 곡 불러오기</option></select><button onclick="loadMusicPreset()" class="audio-btn px-2 py-1.5">불러오기</button></div>
@@ -1287,6 +1320,29 @@ HTML = r"""<!DOCTYPE html>
         }
 
         /**
+         * Virtual On-Screen Keypad Mode
+         * 수학 기호 키패드와 알파벳 전체 키패드를 전환합니다.
+         */
+        function toggleAlphabetKeyboard() {
+            const mathKeys = document.getElementById('math-symbol-keys');
+            const alphabetKeys = document.getElementById('alphabet-keys');
+            const toggleButton = document.getElementById('alphabet-toggle');
+
+            if (!mathKeys || !alphabetKeys || !toggleButton) return;
+
+            const showingAlphabet = !alphabetKeys.classList.contains('hidden');
+            if (showingAlphabet) {
+                alphabetKeys.classList.add('hidden');
+                mathKeys.classList.remove('hidden');
+                toggleButton.textContent = 'ABC 알파벳 입력';
+            } else {
+                mathKeys.classList.add('hidden');
+                alphabetKeys.classList.remove('hidden');
+                toggleButton.textContent = '수학 기호 입력';
+            }
+        }
+
+        /**
          * Virtual On-Screen Keypad Functions
          */
         function insertKey(key) {
@@ -1530,11 +1586,19 @@ HTML = r"""<!DOCTYPE html>
             gain.gain.setValueAtTime(0.22,when); gain.gain.exponentialRampToValueAtTime(0.001,when+0.14);
             osc.connect(gain); gain.connect(state.audio.masterGain); osc.start(when); osc.stop(when+0.15);
         }
-        function playHat(when) {
+        function playHat(when, volume=0.07) {
             const ctx=state.audio.ctx, length=Math.floor(ctx.sampleRate*0.045), buffer=ctx.createBuffer(1,length,ctx.sampleRate), data=buffer.getChannelData(0);
             for(let i=0;i<length;i++) data[i]=(Math.random()*2-1)*(1-i/length);
             const src=ctx.createBufferSource(), filter=ctx.createBiquadFilter(), gain=ctx.createGain();
-            src.buffer=buffer; filter.type='highpass'; filter.frequency.value=6500; gain.gain.setValueAtTime(0.07,when); gain.gain.exponentialRampToValueAtTime(0.001,when+0.045);
+            src.buffer=buffer; filter.type='highpass'; filter.frequency.value=6500; gain.gain.setValueAtTime(Math.max(0.001,volume),when); gain.gain.exponentialRampToValueAtTime(0.001,when+0.045);
+            src.connect(filter); filter.connect(gain); gain.connect(state.audio.masterGain); src.start(when);
+        }
+        function playSnare(when, volume=0.12) {
+            const ctx=state.audio.ctx, length=Math.floor(ctx.sampleRate*0.12), buffer=ctx.createBuffer(1,length,ctx.sampleRate), data=buffer.getChannelData(0);
+            for(let i=0;i<length;i++) data[i]=(Math.random()*2-1)*(1-i/length);
+            const src=ctx.createBufferSource(), filter=ctx.createBiquadFilter(), gain=ctx.createGain();
+            src.buffer=buffer; filter.type='highpass'; filter.frequency.value=1200;
+            gain.gain.setValueAtTime(Math.max(0.001,volume),when); gain.gain.exponentialRampToValueAtTime(0.001,when+0.12);
             src.connect(filter); filter.connect(gain); gain.connect(state.audio.masterGain); src.start(when);
         }
         function runMusicStep(step, x) {
@@ -1548,16 +1612,21 @@ HTML = r"""<!DOCTYPE html>
                 const degree=Math.abs(Math.round(graphY*2+step))%scale.length; const midi=graphMidi+(scale[degree]||0)-scale[0];
                 playSynthNote(note(midi),beat*0.72,genre==='edm'?'sawtooth':'triangle',vol.melody,when);
             }
-            if(document.getElementById('part-bass').checked && step%2===0) playSynthNote(note(36+root%12),beat*1.65,'sawtooth',vol.bass,when);
+            if(document.getElementById('part-bass').checked && step%2===0) {
+                const bassMidi = genre==='dnb' ? 31+root%12 : genre==='funk' ? 38+root%12 : 36+root%12;
+                playSynthNote(note(bassMidi),beat*(genre==='lofi'?1.9:1.65),genre==='phonk'||genre==='dnb'?'sawtooth':'triangle',vol.bass,when);
+            }
             if(document.getElementById('part-chords').checked && step%4===0){
-                const chord=[0, scale[2]||4, scale[4]||7]; chord.forEach(n=>playSynthNote(note(48+n),beat*3.2,'sine',vol.chords/2.2,when));
+                const chord=[0, scale[2]||4, scale[4]||7]; chord.forEach(n=>playSynthNote(note(48+n),beat*3.2,genre==='classic'||genre==='ambient'?'sine':'triangle',vol.chords/2.2,when));
             }
-            if(document.getElementById('part-arp').checked){const degree=scale[step%scale.length];playSynthNote(note(60+degree),beat*0.42,'triangle',vol.arp,when);}
-            if(document.getElementById('part-drums').checked){
-                if(step%4===0 || (genre==='phonk' && step%4===2)) playKick(when);
-                if(step%4===2) playSynthNote(180,beat*0.1,'triangle',vol.drums*0.45,when);
-                if(step%2===0 || genre==='edm') playHat(when);
-            }
+            if(document.getElementById('part-arp').checked){const degree=scale[step%scale.length];playSynthNote(note(60+degree),beat*0.42,genre==='edm'||genre==='trance'?'sawtooth':'triangle',vol.arp,when);}
+            const drumsOn=document.getElementById('part-drums').checked;
+            const kickOn=document.getElementById('part-kick').checked;
+            const snareOn=document.getElementById('part-snare').checked;
+            const hatOn=document.getElementById('part-hihat').checked;
+            if(drumsOn && kickOn && (step%4===0 || (['phonk','trap','hiphop'].includes(genre) && step%4===2) || (['house','edm','dnb'].includes(genre) && step%2===0))) playKick(when);
+            if(drumsOn && snareOn && (step%4===2 || (['rock','pop','kpop','jpop','funk'].includes(genre) && step%4===0))) playSnare(when, genre==='phonk'?0.16:0.10);
+            if(drumsOn && hatOn && (step%2===0 || ['edm','house','trance','trap','dnb'].includes(genre))) playHat(when, ['edm','trap','dnb'].includes(genre)?0.09:0.055);
         }
         function playGraphMusic() {
             if(!initAudioEngine()) return;
@@ -1572,7 +1641,7 @@ HTML = r"""<!DOCTYPE html>
             if(state.audio.isPlaying) pauseAudioTrace();
         }
         function readMusicPreset() {
-            const settings = { bpm:document.getElementById('music-bpm').value, genre:document.getElementById('music-genre').value, key:document.getElementById('music-key').value, scale:document.getElementById('music-scale').value, parts:['melody','bass','chords','arp','drums'].reduce((o,k)=>{o[k]=document.getElementById('part-'+k).checked;return o;},{}), waveform:document.getElementById('audio-waveform').value }; localStorage.setItem('cosmos_music_settings', JSON.stringify(settings)); scheduleCloudSave(); return settings;
+            const settings = { bpm:document.getElementById('music-bpm').value, genre:document.getElementById('music-genre').value, key:document.getElementById('music-key').value, scale:document.getElementById('music-scale').value, parts:['melody','bass','chords','arp','drums','kick','snare','hihat'].reduce((o,k)=>{o[k]=document.getElementById('part-'+k).checked;return o;},{}), waveform:document.getElementById('audio-waveform').value }; localStorage.setItem('cosmos_music_settings', JSON.stringify(settings)); scheduleCloudSave(); return settings;
         }
         function refreshMusicLibrary() {
             const select=document.getElementById('music-library-select'); if(!select) return;
@@ -1922,8 +1991,8 @@ HTML = r"""<!DOCTYPE html>
 
         // Cloud account and per-user data storage (Supabase).
         // Configure these two values using your own Supabase project before deployment.
-        const SUPABASE_URL = 'https://eqiozrbihsqcttaskdwg.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_HU44ZRw5dEA7srhdCB3-Og_NBD975Ik';
+        const SUPABASE_URL = 'https://github.com/5tephen-38317/performance/blob/main/main.py';
+        const SUPABASE_ANON_KEY = 'sb_publishable_QhXwfPy9tfGK06BAWn24og_RE2chtR8';
         const cloudConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
         const cloud = cloudConfigured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
         let cosmosUser = null;
@@ -1958,8 +2027,13 @@ HTML = r"""<!DOCTYPE html>
             try {
                 const { data, error } = await cloud.auth.signUp({ email, password, options: { data: { display_name: name } } });
                 if (error) throw error;
-                if (data.session) { cosmosUser = data.user; await afterCloudLogin(name, email); }
-                else { showAuthError('signup-error', '가입 요청을 보냈습니다. 이메일 인증을 완료한 뒤 로그인해 주세요.'); }
+                if (data.session && data.user) {
+                    cosmosUser = data.user;
+                    await afterCloudLogin(name, email);
+                    showToast('회원가입 완료! 바로 로그인되었습니다.');
+                } else {
+                    showAuthError('signup-error', '계정은 생성됐지만 바로 로그인되지 않았습니다. Supabase에서 Authentication → Providers → Email → Confirm email을 끈 뒤 다시 시도하거나 로그인해 주세요.');
+                }
                 document.getElementById('signup-password').value = '';
                 document.getElementById('signup-confirm').value = '';
             } catch (err) { showAuthError('signup-error', err.message || '회원가입에 실패했습니다.'); }
@@ -1977,7 +2051,7 @@ HTML = r"""<!DOCTYPE html>
                 const name = data.user.user_metadata?.display_name || email.split('@')[0];
                 await afterCloudLogin(name, email);
                 document.getElementById('login-password').value = '';
-            } catch (err) { showAuthError('login-error', '로그인 실패: 이메일 또는 비밀번호를 확인해 주세요.'); }
+            } catch (err) { console.error('Login failed:', err); showAuthError('login-error', '로그인 실패: 이메일·비밀번호를 확인해 주세요. 회원가입 직후라면 Supabase의 Confirm email 설정이 꺼져 있는지도 확인해 주세요.'); }
         }
 
         async function afterCloudLogin(name, email) {
