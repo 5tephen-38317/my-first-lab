@@ -107,23 +107,33 @@ HTML = r"""<!DOCTYPE html>
             background-color: #1a62e0;
         }
 
-        /* Full-width ABC / 123 virtual keyboard */
-        #keypad-tab-content { display:flex; flex-direction:column; gap:6px; height:192px; max-width:none; }
-        .keyboard-mode-bar { display:flex; justify-content:center; gap:6px; flex:none; }
-        .keyboard-mode-btn { padding:4px 22px; border:1px solid #c5c9ce; border-radius:5px; background:#f8f9fa; color:#4b5563; font-size:12px; font-weight:700; }
-        .keyboard-mode-btn.active { background:#2b72ee; color:white; border-color:#2b72ee; }
-        .keyboard-layout { display:none; flex:1; min-height:0; flex-direction:column; gap:4px; width:100%; }
+        /* Desmos-style compact on-screen math keyboard */
+        #bottom-panel { min-height:0; }
+        #keypad-tab-content { display:flex; flex-direction:column; align-items:center; gap:3px; height:142px; padding:3px 8px 5px; }
+        .keyboard-mode-bar { display:none; }
+        .keyboard-layout { display:none; width:min(710px, 96vw); height:100%; min-height:0; gap:3px; }
         .keyboard-layout.active { display:flex; }
         .keyboard-row { display:flex; flex:1; min-height:0; gap:4px; justify-content:center; }
-        .keyboard-row .key-btn { flex:1; min-width:0; min-height:0; font-size:13px; }
-        .keyboard-row .key-btn.wide { flex:1.6; }
-        .keyboard-row .key-btn.space { flex:5; }
+        .keyboard-row .key-btn { flex:1; min-width:0; min-height:0; font-size:13px; border-radius:2px; }
+        .keyboard-row .key-btn.wide { flex:1.45; }
+        .keyboard-row .key-btn.space { flex:4; }
         .keyboard-row .key-btn.function { font-size:11px; }
+        /* Screenshot-matched 123 layout: variable keys | numeric pad | cursor/actions */
+        #keyboard-123 { display:none; flex-direction:row; align-items:stretch; gap:8px; }
+        #keyboard-123.active { display:flex; }
+        #keyboard-123 .kb-variable { width:37%; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); gap:3px; }
+        #keyboard-123 .kb-numbers { width:37%; display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(4,1fr); gap:3px; }
+        #keyboard-123 .kb-actions { flex:1; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(4,1fr); gap:3px; }
+        #keyboard-123 .kb-actions .enter { grid-column:1 / 4; }
+        #keyboard-abc { flex-direction:column; justify-content:center; gap:3px; }
+        #keyboard-abc .keyboard-row { width:100%; }
+        #keyboard-abc .keyboard-row:nth-child(2) { padding:0 3%; }
+        #keyboard-abc .keyboard-row:nth-child(3) { padding:0 8%; }
         @media (max-width:700px) {
-            #keypad-tab-content { height:184px; }
-            .keyboard-row { gap:3px; }
-            .keyboard-row .key-btn { font-size:11px; }
-            .keyboard-row .key-btn.function { font-size:9px; }
+            #keypad-tab-content { height:132px; }
+            .keyboard-layout { width:98vw; }
+            .keyboard-row { gap:2px; }
+            .keyboard-row .key-btn { font-size:10px; }
         }
 
         /* Cosmos Audio Trace Panel Button Styling */
@@ -343,42 +353,40 @@ HTML = r"""<!DOCTYPE html>
                 <button id="keyboard-mode-123" class="keyboard-mode-btn active" onclick="switchKeyboardMode('123')" type="button">123</button>
             </div>
 
-            <!-- ABC mode: full QWERTY keyboard only -->
+            <!-- ABC: Desmos screenshot-style QWERTY arrangement -->
             <div id="keyboard-abc" class="keyboard-layout" aria-label="영문 QWERTY 키보드">
                 <div class="keyboard-row">
                     <button class="key-btn" onclick="insertKey('q')">q</button><button class="key-btn" onclick="insertKey('w')">w</button><button class="key-btn" onclick="insertKey('e')">e</button><button class="key-btn" onclick="insertKey('r')">r</button><button class="key-btn" onclick="insertKey('t')">t</button><button class="key-btn" onclick="insertKey('y')">y</button><button class="key-btn" onclick="insertKey('u')">u</button><button class="key-btn" onclick="insertKey('i')">i</button><button class="key-btn" onclick="insertKey('o')">o</button><button class="key-btn" onclick="insertKey('p')">p</button>
                 </div>
                 <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('a')">a</button><button class="key-btn" onclick="insertKey('s')">s</button><button class="key-btn" onclick="insertKey('d')">d</button><button class="key-btn" onclick="insertKey('f')">f</button><button class="key-btn" onclick="insertKey('g')">g</button><button class="key-btn" onclick="insertKey('h')">h</button><button class="key-btn" onclick="insertKey('j')">j</button><button class="key-btn" onclick="insertKey('k')">k</button><button class="key-btn" onclick="insertKey('l')">l</button>
+                    <button class="key-btn" onclick="insertKey('a')">a</button><button class="key-btn" onclick="insertKey('s')">s</button><button class="key-btn" onclick="insertKey('d')">d</button><button class="key-btn" onclick="insertKey('f')">f</button><button class="key-btn" onclick="insertKey('g')">g</button><button class="key-btn" onclick="insertKey('h')">h</button><button class="key-btn" onclick="insertKey('j')">j</button><button class="key-btn" onclick="insertKey('k')">k</button><button class="key-btn" onclick="insertKey('l')">l</button><button class="key-btn" onclick="insertKey('theta')">θ</button>
                 </div>
                 <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('z')">z</button><button class="key-btn" onclick="insertKey('x')">x</button><button class="key-btn" onclick="insertKey('c')">c</button><button class="key-btn" onclick="insertKey('v')">v</button><button class="key-btn" onclick="insertKey('b')">b</button><button class="key-btn" onclick="insertKey('n')">n</button><button class="key-btn" onclick="insertKey('m')">m</button><button class="key-btn key-btn-dark wide" onclick="insertKey('_')">_</button>
+                    <button class="key-btn key-btn-dark wide" >⬆</button><button class="key-btn" onclick="insertKey('z')">z</button><button class="key-btn" onclick="insertKey('x')">x</button><button class="key-btn" onclick="insertKey('c')">c</button><button class="key-btn" onclick="insertKey('v')">v</button><button class="key-btn" onclick="insertKey('b')">b</button><button class="key-btn" onclick="insertKey('n')">n</button><button class="key-btn" onclick="insertKey('m')">m</button><button class="key-btn key-btn-dark wide" onclick="handleBackspace()">⌫</button>
                 </div>
                 <div class="keyboard-row">
-                    <button class="key-btn key-btn-dark function" onclick="moveCursor(-1)" aria-label="커서 왼쪽">←</button>
-                    <button class="key-btn key-btn-dark space" onclick="insertKey(' ')" aria-label="공백">space</button>
-                    <button class="key-btn key-btn-dark function" onclick="moveCursor(1)" aria-label="커서 오른쪽">→</button>
-                    <button class="key-btn key-btn-dark wide" onclick="handleBackspace()" aria-label="지우기">⌫</button>
-                    <button class="key-btn key-btn-blue wide" onclick="handleEnter()">↵</button>
+                    <button class="key-btn key-btn-dark wide" onclick="switchKeyboardMode('123')">1 2 3</button><button class="key-btn" onclick="insertKey('a_{')">aᵦ</button><button class="key-btn" onclick="insertKey('!')">! '</button><button class="key-btn" onclick="insertKey('[')">[ ]</button><button class="key-btn" onclick="insertKey('{')">{ }</button><button class="key-btn" onclick="insertKey('~')">~ %</button><button class="key-btn" onclick="insertKey(';')">; :</button><button class="key-btn key-btn-blue wide" onclick="handleEnter()">↵</button>
                 </div>
             </div>
 
-            <!-- 123 mode: numbers and mathematical symbols only -->
+            <!-- 123: Desmos screenshot-style variable / number / action groups -->
             <div id="keyboard-123" class="keyboard-layout active" aria-label="숫자 및 수학 기호 키보드">
-                <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('7')">7</button><button class="key-btn" onclick="insertKey('8')">8</button><button class="key-btn" onclick="insertKey('9')">9</button><button class="key-btn key-btn-dark" onclick="insertKey('/')">÷</button><button class="key-btn key-btn-dark" onclick="insertKey('^')">xʸ</button><button class="key-btn" onclick="insertKey('(')">(</button><button class="key-btn" onclick="insertKey(')')">)</button>
+                <div class="kb-variable">
+                    <button class="key-btn" onclick="insertKey('x')"><i>x</i></button><button class="key-btn" onclick="insertKey('y')"><i>y</i></button><button class="key-btn" onclick="insertKey('^2')">a²</button><button class="key-btn" onclick="insertKey('^')">aᵇ</button>
+                    <button class="key-btn" onclick="insertKey('(')">(</button><button class="key-btn" onclick="insertKey(')')">)</button><button class="key-btn" onclick="insertKey('<')">&lt;</button><button class="key-btn" onclick="insertKey('>')">&gt;</button>
+                    <button class="key-btn" onclick="insertKey('abs(')">|a|</button><button class="key-btn" onclick="insertKey(',')">,</button><button class="key-btn" onclick="insertKey('<=')">≤</button><button class="key-btn" onclick="insertKey('>=')">≥</button>
+                    <button class="key-btn key-btn-dark" onclick="switchKeyboardMode('abc')">A B C</button><button class="key-btn key-btn-dark" >◖))</button><button class="key-btn" onclick="insertKey('sqrt(')">√</button><button class="key-btn" onclick="insertKey('pi')">π</button>
                 </div>
-                <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('4')">4</button><button class="key-btn" onclick="insertKey('5')">5</button><button class="key-btn" onclick="insertKey('6')">6</button><button class="key-btn key-btn-dark" onclick="insertKey('*')">×</button><button class="key-btn key-btn-dark" onclick="insertKey('-')">−</button><button class="key-btn" onclick="insertKey('<')">&lt;</button><button class="key-btn" onclick="insertKey('>')">&gt;</button>
+                <div class="kb-numbers">
+                    <button class="key-btn" onclick="insertKey('7')">7</button><button class="key-btn" onclick="insertKey('8')">8</button><button class="key-btn" onclick="insertKey('9')">9</button><button class="key-btn key-btn-dark" onclick="insertKey('/')">÷</button>
+                    <button class="key-btn" onclick="insertKey('4')">4</button><button class="key-btn" onclick="insertKey('5')">5</button><button class="key-btn" onclick="insertKey('6')">6</button><button class="key-btn key-btn-dark" onclick="insertKey('*')">×</button>
+                    <button class="key-btn" onclick="insertKey('1')">1</button><button class="key-btn" onclick="insertKey('2')">2</button><button class="key-btn" onclick="insertKey('3')">3</button><button class="key-btn key-btn-dark" onclick="insertKey('-')">−</button>
+                    <button class="key-btn" onclick="insertKey('0')">0</button><button class="key-btn" onclick="insertKey('.')">.</button><button class="key-btn" onclick="insertKey('=')">=</button><button class="key-btn key-btn-dark" onclick="insertKey('+')">+</button>
                 </div>
-                <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('1')">1</button><button class="key-btn" onclick="insertKey('2')">2</button><button class="key-btn" onclick="insertKey('3')">3</button><button class="key-btn key-btn-dark" onclick="insertKey('+')">+</button><button class="key-btn" onclick="insertKey('.')">.</button><button class="key-btn" onclick="insertKey(',')">,</button><button class="key-btn" onclick="insertKey('=')">=</button>
-                </div>
-                <div class="keyboard-row">
-                    <button class="key-btn" onclick="insertKey('0')">0</button><button class="key-btn" onclick="insertKey('x')"><i>x</i></button><button class="key-btn" onclick="insertKey('y')"><i>y</i></button><button class="key-btn" onclick="insertKey('pi')">π</button><button class="key-btn" onclick="insertKey('sqrt(')">√</button><button class="key-btn" onclick="insertKey('|')">|x|</button><button class="key-btn" onclick="insertKey('<=')">≤</button>
-                </div>
-                <div class="keyboard-row">
-                    <button class="key-btn function" onclick="insertKey('sin(')">sin</button><button class="key-btn function" onclick="insertKey('cos(')">cos</button><button class="key-btn function" onclick="insertKey('tan(')">tan</button><button class="key-btn function" onclick="insertKey('log(')">log</button><button class="key-btn function" onclick="insertKey('ln(')">ln</button><button class="key-btn key-btn-dark function" onclick="moveCursor(-1)">←</button><button class="key-btn key-btn-dark function" onclick="moveCursor(1)">→</button><button class="key-btn key-btn-dark function" onclick="handleBackspace()">⌫</button><button class="key-btn key-btn-blue function" onclick="handleEnter()">↵</button>
+                <div class="kb-actions">
+                    <button class="key-btn function" onclick="insertKey('sin(')">함수</button><button class="key-btn function" onclick="insertKey('cos(')">cos</button><button class="key-btn function" onclick="insertKey('tan(')">tan</button>
+                    <button class="key-btn key-btn-dark" onclick="moveCursor(-1)">←</button><button class="key-btn key-btn-dark" onclick="moveCursor(1)">→</button><button class="key-btn key-btn-dark" onclick="handleBackspace()">⌫</button>
+                    <button class="key-btn key-btn-blue enter" onclick="handleEnter()">↵</button>
                 </div>
             </div>
         </div>
@@ -422,8 +430,9 @@ HTML = r"""<!DOCTYPE html>
                             <label class="flex flex-col gap-1 text-slate-600">조성<select id="music-key" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="0">C 메이저 / A 마이너</option><option value="2">D 메이저</option><option value="4">E 메이저</option><option value="5">F 메이저</option><option value="7">G 메이저</option><option value="9">A 메이저</option></select></label>
                             <label class="flex flex-col gap-1 text-slate-600">음계<select id="music-scale" class="border border-slate-300 rounded px-2 py-1.5 bg-white text-slate-800"><option value="major">메이저</option><option value="minor">마이너</option><option value="pentatonic">펜타토닉</option><option value="chromatic">반음계</option></select></label>
                         </div>
+                        <div class="text-[11px] font-semibold text-slate-700 mb-1">악기 및 리듬 파트 선택 (트랙 구성)</div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-slate-700">
-                            <label><input type="checkbox" id="part-melody" checked> 그래프 멜로디</label><label><input type="checkbox" id="part-bass" checked> 베이스</label><label><input type="checkbox" id="part-chords" checked> 코드</label><label><input type="checkbox" id="part-arp"> 아르페지오</label><label><input type="checkbox" id="part-drums" checked> 드럼 전체 켜기</label><label><input type="checkbox" id="part-kick" checked> 킥</label><label><input type="checkbox" id="part-snare" checked> 스네어</label><label><input type="checkbox" id="part-hihat" checked> 하이햇</label>
+                            <label><input type="checkbox" id="part-melody" checked> 그래프 멜로디</label><label><input type="checkbox" id="part-bass" checked> 베이스</label><label><input type="checkbox" id="part-chords" checked> 코드</label><label><input type="checkbox" id="part-arp"> 아르페지오</label><label><input type="checkbox" id="part-drums" checked> 드럼 파트 활성화</label><label><input type="checkbox" id="part-kick" checked> 킥</label><label><input type="checkbox" id="part-snare" checked> 스네어</label><label><input type="checkbox" id="part-hihat" checked> 하이햇</label>
                         </div>
                         <div id="audio-layer-volumes" class="space-y-1 text-[11px]"></div>
                         <div class="flex flex-wrap gap-2 items-center"><input id="music-song-name" type="text" placeholder="곡 이름" class="border border-slate-300 rounded px-2 py-1 text-xs w-28"><button onclick="saveMusicPreset()" class="audio-btn px-2 py-1.5">곡 저장</button><select id="music-library-select" class="border border-slate-300 rounded px-2 py-1 text-xs bg-white"><option value="">저장한 곡 불러오기</option></select><button onclick="loadMusicPreset()" class="audio-btn px-2 py-1.5">불러오기</button></div>
