@@ -319,60 +319,27 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- TAB 1: VIRTUAL MATH KEYBOARD -->
         <div id="keypad-tab-content" class="p-2 max-w-5xl mx-auto w-full grid grid-cols-12 gap-1.5 h-44 sm:h-48 text-sm">
-            <!-- Col 1-4: Variables, Math Symbols & Full Alphabet -->
-            <div class="col-span-4 flex flex-col gap-1 min-h-0">
-                <button id="alphabet-toggle" class="key-btn key-btn-dark w-full"
-                        style="height:22px; min-height:22px; flex-shrink:0; font-size:11px;"
-                        onclick="toggleAlphabetKeyboard()">ABC 알파벳 입력</button>
+            <!-- Col 1-4: Variables & Math Symbols -->
+            <div class="col-span-4 grid grid-cols-4 gap-1">
+                <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
+                <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
+                <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
+                <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
 
-                <div id="math-symbol-keys" class="flex-1 min-h-0 grid grid-cols-4 grid-rows-4 gap-1">
-                    <button class="key-btn" onclick="insertKey('x')"><i>x</i></button>
-                    <button class="key-btn" onclick="insertKey('y')"><i>y</i></button>
-                    <button class="key-btn" onclick="insertKey('^2')"><i>a</i>²</button>
-                    <button class="key-btn" onclick="insertKey('^')"><i>a</i><sup><i>b</i></sup></button>
-                    <button class="key-btn" onclick="insertKey('(')">(</button>
-                    <button class="key-btn" onclick="insertKey(')')">)</button>
-                    <button class="key-btn" onclick="insertKey('<')">&lt;</button>
-                    <button class="key-btn" onclick="insertKey('>')">&gt;</button>
-                    <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
-                    <button class="key-btn" onclick="insertKey(',')">,</button>
-                    <button class="key-btn" onclick="insertKey('<=')">≤</button>
-                    <button class="key-btn" onclick="insertKey('>=')">≥</button>
-                    <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
-                    <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
-                    <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
-                    <button class="key-btn" onclick="insertKey('pi')">π</button>
-                </div>
+                <button class="key-btn" onclick="insertKey('(')">(</button>
+                <button class="key-btn" onclick="insertKey(')')">)</button>
+                <button class="key-btn" onclick="insertKey('<')">&lt;</button>
+                <button class="key-btn" onclick="insertKey('>')">&gt;</button>
 
-                <div id="alphabet-keys" class="hidden flex-1 min-h-0 grid grid-cols-4 grid-rows-7 gap-1">
-                    <button class="key-btn" onclick="insertKey('q')">q</button>
-                    <button class="key-btn" onclick="insertKey('w')">w</button>
-                    <button class="key-btn" onclick="insertKey('e')">e</button>
-                    <button class="key-btn" onclick="insertKey('r')">r</button>
-                    <button class="key-btn" onclick="insertKey('t')">t</button>
-                    <button class="key-btn" onclick="insertKey('y')">y</button>
-                    <button class="key-btn" onclick="insertKey('u')">u</button>
-                    <button class="key-btn" onclick="insertKey('i')">i</button>
-                    <button class="key-btn" onclick="insertKey('o')">o</button>
-                    <button class="key-btn" onclick="insertKey('p')">p</button>
-                    <button class="key-btn" onclick="insertKey('a')">a</button>
-                    <button class="key-btn" onclick="insertKey('s')">s</button>
-                    <button class="key-btn" onclick="insertKey('d')">d</button>
-                    <button class="key-btn" onclick="insertKey('f')">f</button>
-                    <button class="key-btn" onclick="insertKey('g')">g</button>
-                    <button class="key-btn" onclick="insertKey('h')">h</button>
-                    <button class="key-btn" onclick="insertKey('j')">j</button>
-                    <button class="key-btn" onclick="insertKey('k')">k</button>
-                    <button class="key-btn" onclick="insertKey('l')">l</button>
-                    <button class="key-btn" onclick="insertKey('z')">z</button>
-                    <button class="key-btn" onclick="insertKey('x')">x</button>
-                    <button class="key-btn" onclick="insertKey('c')">c</button>
-                    <button class="key-btn" onclick="insertKey('v')">v</button>
-                    <button class="key-btn" onclick="insertKey('b')">b</button>
-                    <button class="key-btn" onclick="insertKey('n')">n</button>
-                    <button class="key-btn" onclick="insertKey('m')">m</button>
-                    <button class="key-btn key-btn-dark col-span-2" onclick="insertKey('_')">_ 밑줄</button>
-                </div>
+                <button class="key-btn" onclick="insertKey('|')">|<i>a</i>|</button>
+                <button class="key-btn" onclick="insertKey(',')">,</button>
+                <button class="key-btn" onclick="insertKey('<=')">≤</button>
+                <button class="key-btn" onclick="insertKey('>=')">≥</button>
+
+                <button class="key-btn key-btn-dark" onclick="insertKey('a')"><i>a</i></button>
+                <button class="key-btn key-btn-dark" onclick="insertKey('b')"><i>b</i></button>
+                <button class="key-btn" onclick="insertKey('sqrt(')">√</button>
+                <button class="key-btn" onclick="insertKey('pi')">π</button>
             </div>
 
             <!-- Col 5-8: Standard Numpad -->
@@ -1317,29 +1284,6 @@ HTML = r"""<!DOCTYPE html>
         }
         function hideAddMenu() {
             document.getElementById('add-menu-popover').classList.add('hidden');
-        }
-
-        /**
-         * Virtual On-Screen Keypad Mode
-         * 수학 기호 키패드와 알파벳 전체 키패드를 전환합니다.
-         */
-        function toggleAlphabetKeyboard() {
-            const mathKeys = document.getElementById('math-symbol-keys');
-            const alphabetKeys = document.getElementById('alphabet-keys');
-            const toggleButton = document.getElementById('alphabet-toggle');
-
-            if (!mathKeys || !alphabetKeys || !toggleButton) return;
-
-            const showingAlphabet = !alphabetKeys.classList.contains('hidden');
-            if (showingAlphabet) {
-                alphabetKeys.classList.add('hidden');
-                mathKeys.classList.remove('hidden');
-                toggleButton.textContent = 'ABC 알파벳 입력';
-            } else {
-                mathKeys.classList.add('hidden');
-                alphabetKeys.classList.remove('hidden');
-                toggleButton.textContent = '수학 기호 입력';
-            }
         }
 
         /**
