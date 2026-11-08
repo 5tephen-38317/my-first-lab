@@ -2456,7 +2456,7 @@ HTML = r"""<!DOCTYPE html>
 # 회원가입은 Streamlit 다중 페이지로 분리해 pages/회원가입.py에서 처리합니다.
 nav_spacer, signup_link_col = st.columns([8, 1])
 with signup_link_col:
-    st.page_link("pages/회원가입.py", label="회원가입", icon=":material/person_add:")
+    st.page_link("pages/login.py", label="회원가입", icon=":material/person_add:")
 
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
