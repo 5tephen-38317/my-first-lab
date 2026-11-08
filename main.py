@@ -1,3 +1,4 @@
+import json
 import streamlit as st
 import streamlit.components.v1 as components
 
@@ -217,7 +218,7 @@ HTML = r"""<!DOCTYPE html>
     <header class="bg-[#222222] text-white h-12 px-3 flex items-center justify-between z-30 shrink-0 select-none">
         <!-- Left Title and Save -->
         <div class="flex items-center space-x-2">
-            <button onclick="showToast('폴더 목록을 불러왔습니다.')" class="p-1.5 hover:bg-[#3b3b3b] rounded text-slate-300 hover:text-white transition">
+            <button onclick="openModal('file-modal')" class="p-1.5 hover:bg-[#3b3b3b] rounded text-slate-300 hover:text-white transition">
                 <i class="fa-regular fa-folder text-base"></i>
             </button>
             <input id="graph-title-input" type="text" value="Cosmos 그래프" 
@@ -657,6 +658,19 @@ HTML = r"""<!DOCTYPE html>
             <button onclick="openModal('login-modal')" class="text-xs text-blue-600 hover:underline">이미 계정이 있나요? 로그인</button>
         </div>
 
+        <!-- Saved Graphs / File Modal -->
+        <div id="file-modal" class="hidden bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 flex flex-col space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">내 그래프 파일</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p class="text-xs text-slate-500">저장 버튼으로 이 브라우저에 저장한 그래프를 불러오거나 삭제할 수 있습니다.</p>
+            <div id="saved-graphs-list" class="max-h-72 overflow-y-auto space-y-2">
+                <p class="text-sm text-slate-400 text-center py-6">저장된 그래프가 없습니다.</p>
+            </div>
+            <div class="flex justify-end"><button onclick="closeModal()" class="px-3 py-2 rounded bg-slate-100 text-slate-700 text-xs">닫기</button></div>
+        </div>
+
         <!-- Share Modal -->
         <div id="share-modal" class="hidden bg-white rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col space-y-4">
             <div class="flex justify-between items-center">
@@ -732,7 +746,7 @@ HTML = r"""<!DOCTYPE html>
             angleUnit: 'rad', // 'rad' or 'deg'
 
             items: [], // Array of expressions / notes / tables
-            variables: { a: 1, b: 2 }, // Active slider variables
+            variables: { a: 1, b: 1 }, // Active slider variables
             activeItemId: null,
             colorPopoverItemId: null,
             
@@ -2036,10 +2050,164 @@ HTML = r"""<!DOCTYPE html>
             }
         }
 
+        function makeGraphPayload() {
+            const safeItems = (state.items || []).map(item => ({
+                id: item.id, type: item.type, rawText: item.rawText || '',
+                color: item.color, lineStyle: item.lineStyle || 'solid',
+                visible: item.visible !== false, rows: item.rows || [], text: item.text || ''
+            }));
+            return {
+                version: 1,
+                title: document.getElementById('graph-title-input')?.value || 'Cosmos 그래프',
+                items: safeItems,
+                variables: { ...state.variables },
+                view: { scale: state.scale, offsetX: state.offsetX, offsetY: state.offsetY,
+                    showGrid: state.showGrid, showNumbers: state.showNumbers, angleUnit: state.angleUnit }
+            };
+        }
+
         function saveGraphState() {
-            localStorage.setItem('cosmos_saved_graph', JSON.stringify(state.items));
-            saveCloudWorkspace(true);
-            showToast('그래프 저장 요청을 완료했습니다.');
+            try {
+                const payload = makeGraphPayload();
+                const saved = JSON.parse(localStorage.getItem('cosmos_saved_graphs') || '[]');
+                const entry = {
+                    id: 'graph_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+                    title: payload.title || '이름 없는 그래프',
+                    savedAt: new Date().toISOString(), payload
+                };
+                saved.unshift(entry);
+                localStorage.setItem('cosmos_saved_graphs', JSON.stringify(saved.slice(0, 40)));
+                localStorage.setItem('cosmos_saved_graph', JSON.stringify(payload));
+                if (cloud && cosmosUser) saveCloudWorkspace(false);
+                showToast(cloud && cosmosUser ? '그래프를 저장하고 계정에 동기화했습니다.' : '그래프를 이 브라우저에 저장했습니다.');
+            } catch (err) {
+                console.error('Local graph save failed:', err);
+                showToast('저장에 실패했습니다. 브라우저 저장 공간을 확인하세요.');
+            }
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        function renderSavedGraphList() {
+            const host = document.getElementById('saved-graphs-list');
+            if (!host) return;
+            let saved = [];
+            try { saved = JSON.parse(localStorage.getItem('cosmos_saved_graphs') || '[]'); } catch (_) {}
+            if (!saved.length) {
+                host.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">저장된 그래프가 없습니다. 그래프를 만든 뒤 저장 버튼을 눌러 주세요.</p>';
+                return;
+            }
+            host.innerHTML = saved.map(entry => {
+                const date = new Date(entry.savedAt || Date.now()).toLocaleString('ko-KR');
+                return `<div class="flex items-center gap-2 border border-slate-200 rounded-lg p-3">
+                    <div class="flex-1 min-w-0"><div class="text-sm font-semibold text-slate-800 truncate">${escapeHtml(entry.title || '이름 없는 그래프')}</div>
+                    <div class="text-[11px] text-slate-400">${escapeHtml(date)}</div></div>
+                    <button onclick="loadSavedGraph('${entry.id}')" class="px-3 py-1.5 rounded bg-blue-600 text-white text-xs">열기</button>
+                    <button onclick="deleteSavedGraph('${entry.id}')" class="px-2 py-1.5 rounded bg-slate-100 text-slate-600 text-xs">삭제</button>
+                </div>`;
+            }).join('');
+        }
+
+        function loadSavedGraph(id) {
+            let saved = [];
+            try { saved = JSON.parse(localStorage.getItem('cosmos_saved_graphs') || '[]'); } catch (_) {}
+            const entry = saved.find(item => item.id === id);
+            if (!entry) return showToast('저장된 그래프를 찾을 수 없습니다.');
+            restoreGraphPayload(entry.payload);
+            closeModal();
+            showToast('저장한 그래프를 불러왔습니다.');
+        }
+
+        function deleteSavedGraph(id) {
+            let saved = [];
+            try { saved = JSON.parse(localStorage.getItem('cosmos_saved_graphs') || '[]'); } catch (_) {}
+            localStorage.setItem('cosmos_saved_graphs', JSON.stringify(saved.filter(item => item.id !== id)));
+            renderSavedGraphList();
+            showToast('저장한 그래프를 삭제했습니다.');
+        }
+
+        function restoreGraphPayload(payload) {
+            if (!payload || !Array.isArray(payload.items)) throw new Error('Invalid graph payload');
+            state.variables = { a: 1, b: 1, ...(payload.variables || {}) };
+            state.items = payload.items.map(raw => {
+                const item = { ...raw, compiled: null, error: false, visible: raw.visible !== false };
+                if (item.type === 'expression' && item.rawText) {
+                    try {
+                        let expr = item.rawText;
+                        if (expr.includes('=')) expr = expr.slice(expr.indexOf('=') + 1).trim();
+                        item.compiled = math.compile(expr);
+                        item.compiled.evaluate({ x: 0, ...state.variables });
+                    } catch (err) { item.error = true; item.compiled = null; }
+                }
+                return item;
+            });
+            const view = payload.view || {};
+            if (Number.isFinite(view.scale)) state.scale = view.scale;
+            if (Number.isFinite(view.offsetX)) state.offsetX = view.offsetX;
+            if (Number.isFinite(view.offsetY)) state.offsetY = view.offsetY;
+            if (typeof view.showGrid === 'boolean') state.showGrid = view.showGrid;
+            if (typeof view.showNumbers === 'boolean') state.showNumbers = view.showNumbers;
+            if (view.angleUnit === 'rad' || view.angleUnit === 'deg') state.angleUnit = view.angleUnit;
+            const title = document.getElementById('graph-title-input');
+            if (title) title.value = payload.title || 'Cosmos 그래프';
+            const angleButton = document.getElementById('btn-lang-toggle');
+            if (angleButton) angleButton.textContent = state.angleUnit === 'rad' ? 'Rad' : 'Deg';
+            renderExpressionList(); render();
+        }
+
+        function encodeShareData(payload) {
+            return btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+        }
+
+        function decodeShareData(encoded) {
+            const base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+            const padded = base64 + '='.repeat((4 - base64.length % 4) % 4);
+            return JSON.parse(decodeURIComponent(escape(atob(padded))));
+        }
+
+        function getHostAppUrl() {
+            try {
+                const parentUrl = new URL(window.parent.location.href);
+                if (parentUrl.origin === window.location.origin || parentUrl.protocol.startsWith('http')) {
+                    parentUrl.hash = '';
+                    return parentUrl;
+                }
+            } catch (_) {}
+            try {
+                const ref = new URL(document.referrer);
+                if (ref.protocol === 'http:' || ref.protocol === 'https:') { ref.hash = ''; return ref; }
+            } catch (_) {}
+            const own = new URL(window.location.href); own.hash = ''; return own;
+        }
+
+        function generateShareUrl() {
+            try {
+                const url = getHostAppUrl();
+                url.hash = 'cosmos=' + encodeShareData(makeGraphPayload());
+                return url.toString();
+            } catch (err) {
+                console.error('Share URL generation failed:', err);
+                return '';
+            }
+        }
+
+        function restoreGraphFromShareLink() {
+            try {
+                let hash = window.location.hash || '';
+                try { if (window.parent.location.hash) hash = window.parent.location.hash; } catch (_) {}
+                const match = hash.match(/(?:^#|&)cosmos=([^&]+)/);
+                if (!match) return false;
+                restoreGraphPayload(decodeShareData(match[1]));
+                showToast('공유된 그래프를 불러왔습니다.');
+                return true;
+            } catch (err) {
+                console.error('Shared graph restore failed:', err);
+                showToast('공유 링크의 그래프 데이터를 읽지 못했습니다.');
+                return false;
+            }
         }
 
         /**
@@ -2047,14 +2215,14 @@ HTML = r"""<!DOCTYPE html>
          */
         function openModal(id) {
             document.getElementById('modal-backdrop').classList.remove('hidden');
-            ['login-modal', 'signup-modal', 'share-modal', 'settings-modal', 'help-modal'].forEach(m => {
+            ['login-modal', 'signup-modal', 'file-modal', 'share-modal', 'settings-modal', 'help-modal'].forEach(m => {
                 document.getElementById(m).classList.add('hidden');
             });
             if (id === 'share-modal') {
                 const shareInput = document.getElementById('share-url-input');
-                shareInput.value = (window.location.protocol === 'http:' || window.location.protocol === 'https:')
-                    ? window.location.href : '';
+                shareInput.value = generateShareUrl();
             }
+            if (id === 'file-modal') renderSavedGraphList();
             document.getElementById(id).classList.remove('hidden');
         }
 
@@ -2068,6 +2236,7 @@ HTML = r"""<!DOCTYPE html>
         const SUPABASE_ANON_KEY = 'sb_publishable_QhXwfPy9tfGK06BAWn24og_RE2chtR8';
         const cloudConfigured = SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_ANON_KEY.includes('YOUR_');
         const cloud = cloudConfigured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+        const STREAMLIT_AUTH_SESSION = __COSMOS_STREAMLIT_SESSION__;
         let cosmosUser = null;
         let cloudSaveTimer = null;
 
@@ -2201,21 +2370,21 @@ HTML = r"""<!DOCTYPE html>
             setTimeout(() => toast.classList.add('opacity-0'), 2500);
         }
 
-        function copyShareUrl() {
+        async function copyShareUrl() {
             const input = document.getElementById('share-url-input');
-            const currentUrl = window.location.href;
-            if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
-                input.value = currentUrl;
-                input.select();
+            const currentUrl = generateShareUrl();
+            if (!currentUrl) { showToast('공유 링크를 만들지 못했습니다. 배포된 앱 주소를 확인하세요.'); return; }
+            input.value = currentUrl;
+            input.focus(); input.select();
+            try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(currentUrl).then(() => showToast('Cosmos 주소를 복사했습니다.')).catch(() => {
-                        document.execCommand('copy'); showToast('주소 복사를 시도했습니다.');
-                    });
-                } else {
-                    document.execCommand('copy'); showToast('주소 복사를 시도했습니다.');
+                    await navigator.clipboard.writeText(currentUrl);
+                } else if (!document.execCommand('copy')) {
+                    throw new Error('Clipboard unavailable');
                 }
-            } else {
-                showToast('로컬 파일로 실행 중입니다. 공유하려면 HTML 파일 자체를 전달하세요.');
+                showToast('현재 그래프가 포함된 공유 링크를 복사했습니다.');
+            } catch (err) {
+                showToast('링크가 입력창에 표시되었습니다. 주소를 직접 복사해 주세요.');
             }
         }
 
@@ -2261,11 +2430,22 @@ HTML = r"""<!DOCTYPE html>
         window.onload = function() {
             resizeCanvas();
             updateAccountUI();
-            if (cloud) cloud.auth.getSession().then(async ({ data }) => {
-                if (data.session?.user) { cosmosUser = data.session.user; await afterCloudLogin(cosmosUser.user_metadata?.display_name || cosmosUser.email.split('@')[0], cosmosUser.email); }
-            }).catch(console.error);
-            // Initial Sine Graph matching screenshot
-            addExpression('y = sin(x)');
+            if (cloud && STREAMLIT_AUTH_SESSION && STREAMLIT_AUTH_SESSION.access_token && STREAMLIT_AUTH_SESSION.refresh_token) {
+                cloud.auth.setSession({ access_token: STREAMLIT_AUTH_SESSION.access_token, refresh_token: STREAMLIT_AUTH_SESSION.refresh_token })
+                    .then(async ({ data, error }) => {
+                        if (error) { console.error('Injected session restore failed:', error); return; }
+                        if (data.session?.user) {
+                            cosmosUser = data.session.user;
+                            await afterCloudLogin(cosmosUser.user_metadata?.display_name || cosmosUser.email.split('@')[0], cosmosUser.email);
+                        }
+                    }).catch(console.error);
+            } else if (cloud) {
+                cloud.auth.getSession().then(async ({ data }) => {
+                    if (data.session?.user) { cosmosUser = data.session.user; await afterCloudLogin(cosmosUser.user_metadata?.display_name || cosmosUser.email.split('@')[0], cosmosUser.email); }
+                }).catch(console.error);
+            }
+            // 첫 화면 그래프는 a와 b 두 슬라이더가 실제로 영향을 주도록 설정
+            if (!restoreGraphFromShareLink()) addExpression('y = a*sin(b*x)');
             renderAudioLayerVolumes();
             refreshMusicLibrary();
         };
@@ -2273,4 +2453,11 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
+# 회원가입은 Streamlit 다중 페이지로 분리해 pages/회원가입.py에서 처리합니다.
+nav_spacer, signup_link_col = st.columns([8, 1])
+with signup_link_col:
+    st.page_link("pages/회원가입.py", label="회원가입", icon=":material/person_add:")
+
+session_for_iframe = st.session_state.get("cosmos_supabase_session")
+HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
