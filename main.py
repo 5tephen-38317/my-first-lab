@@ -107,75 +107,52 @@ HTML = r"""<!DOCTYPE html>
             background-color: #1a62e0;
         }
 
-        /* Full-width Desmos-inspired ABC / 123 virtual keyboard */
+        /* Desmos-style bottom keypad: numeric pad + function drawer */
         #keypad-tab-content.cosmos-keyboard-wrap {
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            padding: 6px 10px 9px;
-            height: 190px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            background: #e8eaed;
-            box-sizing: border-box;
+            width:100%; max-width:none; margin:0; padding:7px 10px 9px;
+            height:220px; display:flex; flex-direction:column; gap:7px;
+            background:#f1f1f1; box-sizing:border-box;
         }
-        .keyboard-mode-bar {
-            height: 25px;
-            min-height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .keyboard-mode-switch { display:flex; gap:4px; }
-        .keyboard-mode-btn {
-            min-width: 48px;
-            height: 24px;
-            padding: 0 13px;
-            border: 1px solid #c8cdd2;
-            border-radius: 4px;
-            background: #f7f7f7;
-            color: #454545;
-            font-size: 11px;
-            font-weight: 700;
-        }
-        .keyboard-mode-btn.active {
-            color: #fff;
-            background: #3274d9;
-            border-color: #2866c4;
-        }
-        .keyboard-mode-hint { color:#73777c; font-size:10px; padding-right:3px; }
-        .keyboard-layout { flex:1; min-height:0; display:flex; flex-direction:column; gap:5px; }
+        #keypad-tab-content.cosmos-keyboard-wrap.hidden { display:none !important; }
+        #audio-tab-content.hidden { display:none !important; }
+        #audio-tab-content:not(.hidden) { display:flex !important; }
+        #keypad-tab-content:not(.hidden) { display:flex !important; }
+        .keyboard-mode-bar { height:26px; min-height:26px; display:flex; align-items:center; justify-content:space-between; }
+        .keyboard-mode-switch { display:flex; align-items:center; gap:5px; }
+        .keyboard-mode-btn { min-width:48px; height:25px; padding:0 15px; border:1px solid #c8c8c8; border-radius:3px; background:#fff; color:#333; font-size:12px; font-weight:600; }
+        .keyboard-mode-btn.active { background:#555; border-color:#555; color:#fff; }
+        .keyboard-mode-hint { color:#777; font-size:10px; }
+        .keyboard-layout { flex:1; min-height:0; }
         .keyboard-layout.hidden { display:none !important; }
-        .keyboard-row { display:grid; gap:5px; flex:1; min-height:0; }
-        .qwerty-row { grid-template-columns:repeat(10,minmax(0,1fr)); }
-        .qwerty-home-row { padding:0 4.5%; }
-        .keyboard-row .key-btn { min-width:0; min-height:0; height:100%; font-size:clamp(12px,1.3vw,16px); }
-        .letter-key { background:#fff !important; font-size:clamp(14px,1.5vw,18px) !important; font-weight:500 !important; }
-        .utility-key { background:#dfe2e5 !important; }
-        .qwerty-bottom-row { display:grid; grid-template-columns:.8fr .8fr .8fr 4fr .8fr 1.5fr; gap:5px; }
-        .space-key { background:#fff !important; font-size:11px !important; color:#777 !important; }
-        .enter-key { background:#3274d9 !important; border-color:#2866c4 !important; color:#fff !important; font-weight:700 !important; }
-        .keyboard-math { min-height:0; }
-        .math-keyboard-grid {
-            display:grid;
-            grid-template-columns:repeat(12,minmax(0,1fr));
-            grid-template-rows:repeat(4,minmax(0,1fr));
-            gap:5px;
-            flex:1;
-            min-height:0;
-        }
-        .math-keyboard-grid .key-btn { min-width:0; min-height:0; height:100%; font-size:clamp(11px,1.15vw,15px); }
-        .number-key { background:#fff !important; font-size:clamp(15px,1.5vw,19px) !important; font-weight:600 !important; }
-        .math-function-key { background:#f2f2f2 !important; }
-        .operator-key { background:#dfe2e5 !important; font-weight:700 !important; font-size:17px !important; }
-        @media (max-width: 700px) {
-            #keypad-tab-content.cosmos-keyboard-wrap { height:178px; padding:5px; gap:4px; }
-            .keyboard-layout { gap:4px; }
-            .keyboard-row, .math-keyboard-grid { gap:3px; }
-            .keyboard-row .key-btn, .math-keyboard-grid .key-btn { font-size:11px; }
-            .letter-key, .number-key { font-size:13px !important; }
-            .qwerty-home-row { padding:0 2%; }
+        .desmos-main-layout { display:flex; gap:8px; height:100%; min-height:0; }
+        .desmos-number-grid { width:56%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:repeat(4,minmax(0,1fr)); gap:5px; }
+        .desmos-number-grid .key-btn, .desmos-function-grid .key-btn, .desmos-abc-grid .key-btn { min-width:0; min-height:0; height:100%; font-size:clamp(13px,1.2vw,17px); }
+        .key-btn { background:#fff; border:1px solid #c9c9c9; border-radius:4px; color:#333; box-shadow:0 1px 1px rgba(0,0,0,.08); }
+        .key-btn:hover { background:#e9e9e9; }
+        .key-btn:active { background:#ddd; transform:translateY(1px); }
+        .number-key { background:#fff !important; font-size:clamp(17px,1.5vw,21px) !important; font-weight:500 !important; }
+        .operator-key { background:#e5e5e5 !important; font-weight:600 !important; }
+        .desmos-function-side { flex:1; min-width:0; display:flex; flex-direction:column; gap:5px; }
+        .function-category-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; height:27px; flex:none; }
+        .function-category-btn { border:1px solid #c9c9c9; border-radius:3px; background:#e5e5e5; color:#444; font-size:11px; font-weight:600; }
+        .function-category-btn.active { background:#fff; border-color:#999; color:#222; }
+        .desmos-function-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:5px; flex:1; min-height:0; }
+        .function-key { background:#fff !important; font-size:clamp(11px,1.05vw,14px) !important; }
+        .desmos-utility-row { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; height:30px; flex:none; }
+        .utility-key { background:#e3e3e3 !important; }
+        .enter-key { background:#555 !important; border-color:#444 !important; color:#fff !important; font-weight:700 !important; }
+        .desmos-abc-layout { display:flex; flex-direction:column; gap:5px; height:100%; }
+        .desmos-abc-grid { display:grid; grid-template-columns:repeat(9,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); gap:5px; flex:1; min-height:0; }
+        .abc-letter { background:#fff !important; font-size:clamp(13px,1.25vw,17px) !important; }
+        .abc-bottom-row { display:grid; grid-template-columns:1fr 1fr 1fr 4fr 1fr 1.5fr; gap:5px; height:31px; flex:none; }
+        @media (max-width:700px) {
+            #keypad-tab-content.cosmos-keyboard-wrap { height:205px; padding:5px; gap:4px; }
+            .desmos-main-layout { gap:4px; }
+            .desmos-number-grid, .desmos-function-grid, .desmos-abc-grid { gap:3px; }
+            .function-category-tabs { gap:2px; }
+            .function-category-btn { font-size:9px; }
+            .desmos-utility-row { gap:3px; height:26px; }
+            .desmos-number-grid .key-btn, .desmos-function-grid .key-btn { font-size:11px; }
         }
 
         /* Cosmos Audio Trace Panel Button Styling */
@@ -388,123 +365,123 @@ HTML = r"""<!DOCTYPE html>
             </button>
         </div>
 
-        <!-- TAB 1: VIRTUAL KEYBOARD -->
-        <div id="keypad-tab-content" class="cosmos-keyboard-wrap">
+        <!-- TAB 1: DESMOS-STYLE VIRTUAL KEYPAD -->
+        <div id="keypad-tab-content" class="cosmos-keyboard-wrap" style="display:flex">
             <div class="keyboard-mode-bar">
                 <div class="keyboard-mode-switch">
-                    <button id="keyboard-mode-abc" class="keyboard-mode-btn active" onclick="switchKeyboardMode('abc')">ABC</button>
-                    <button id="keyboard-mode-123" class="keyboard-mode-btn" onclick="switchKeyboardMode('123')">123</button>
+                    <button id="keyboard-mode-123" class="keyboard-mode-btn active" onclick="switchKeyboardMode('123')">123</button>
+                    <button id="keyboard-mode-abc" class="keyboard-mode-btn" onclick="switchKeyboardMode('abc')">ABC</button>
                 </div>
-                <span class="keyboard-mode-hint" id="keyboard-mode-hint">영문 입력</span>
+                <span class="keyboard-mode-hint" id="keyboard-mode-hint">숫자 · 연산 · 함수</span>
             </div>
 
-            <!-- ABC: Full-width QWERTY keyboard -->
-            <div id="keyboard-abc" class="keyboard-layout keyboard-abc">
-                <div class="keyboard-row qwerty-row">
-                    <button class="key-btn letter-key" onclick="insertKey('q')">q</button>
-                    <button class="key-btn letter-key" onclick="insertKey('w')">w</button>
-                    <button class="key-btn letter-key" onclick="insertKey('e')">e</button>
-                    <button class="key-btn letter-key" onclick="insertKey('r')">r</button>
-                    <button class="key-btn letter-key" onclick="insertKey('t')">t</button>
-                    <button class="key-btn letter-key" onclick="insertKey('y')">y</button>
-                    <button class="key-btn letter-key" onclick="insertKey('u')">u</button>
-                    <button class="key-btn letter-key" onclick="insertKey('i')">i</button>
-                    <button class="key-btn letter-key" onclick="insertKey('o')">o</button>
-                    <button class="key-btn letter-key" onclick="insertKey('p')">p</button>
-                </div>
-                <div class="keyboard-row qwerty-row qwerty-home-row">
-                    <button class="key-btn letter-key" onclick="insertKey('a')">a</button>
-                    <button class="key-btn letter-key" onclick="insertKey('s')">s</button>
-                    <button class="key-btn letter-key" onclick="insertKey('d')">d</button>
-                    <button class="key-btn letter-key" onclick="insertKey('f')">f</button>
-                    <button class="key-btn letter-key" onclick="insertKey('g')">g</button>
-                    <button class="key-btn letter-key" onclick="insertKey('h')">h</button>
-                    <button class="key-btn letter-key" onclick="insertKey('j')">j</button>
-                    <button class="key-btn letter-key" onclick="insertKey('k')">k</button>
-                    <button class="key-btn letter-key" onclick="insertKey('l')">l</button>
-                </div>
-                <div class="keyboard-row qwerty-row">
-                    <button class="key-btn utility-key" onclick="moveCursor(-1)" title="커서 왼쪽"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button class="key-btn letter-key" onclick="insertKey('z')">z</button>
-                    <button class="key-btn letter-key" onclick="insertKey('x')">x</button>
-                    <button class="key-btn letter-key" onclick="insertKey('c')">c</button>
-                    <button class="key-btn letter-key" onclick="insertKey('v')">v</button>
-                    <button class="key-btn letter-key" onclick="insertKey('b')">b</button>
-                    <button class="key-btn letter-key" onclick="insertKey('n')">n</button>
-                    <button class="key-btn letter-key" onclick="insertKey('m')">m</button>
-                    <button class="key-btn utility-key" onclick="moveCursor(1)" title="커서 오른쪽"><i class="fa-solid fa-arrow-right"></i></button>
-                    <button class="key-btn utility-key" onclick="handleBackspace()" title="지우기"><i class="fa-solid fa-delete-left"></i></button>
-                </div>
-                <div class="keyboard-row qwerty-bottom-row">
-                    <button class="key-btn utility-key" onclick="insertKey('(')">(</button>
-                    <button class="key-btn utility-key" onclick="insertKey(')')">)</button>
-                    <button class="key-btn utility-key" onclick="insertKey(',')">,</button>
-                    <button class="key-btn space-key" onclick="insertKey(' ')">space</button>
-                    <button class="key-btn utility-key" onclick="insertKey('=')">=</button>
-                    <button class="key-btn enter-key" onclick="handleEnter()">Enter ↵</button>
+            <div id="keyboard-123" class="keyboard-layout">
+                <div class="desmos-main-layout">
+                    <div class="desmos-number-grid">
+                        <button class="key-btn number-key" onclick="insertKey('7')">7</button>
+                        <button class="key-btn number-key" onclick="insertKey('8')">8</button>
+                        <button class="key-btn number-key" onclick="insertKey('9')">9</button>
+                        <button class="key-btn operator-key" onclick="insertKey('/')">÷</button>
+                        <button class="key-btn number-key" onclick="insertKey('4')">4</button>
+                        <button class="key-btn number-key" onclick="insertKey('5')">5</button>
+                        <button class="key-btn number-key" onclick="insertKey('6')">6</button>
+                        <button class="key-btn operator-key" onclick="insertKey('*')">×</button>
+                        <button class="key-btn number-key" onclick="insertKey('1')">1</button>
+                        <button class="key-btn number-key" onclick="insertKey('2')">2</button>
+                        <button class="key-btn number-key" onclick="insertKey('3')">3</button>
+                        <button class="key-btn operator-key" onclick="insertKey('-')">−</button>
+                        <button class="key-btn number-key" onclick="insertKey('0')">0</button>
+                        <button class="key-btn number-key" onclick="insertKey('.')">.</button>
+                        <button class="key-btn operator-key" onclick="insertKey('=')">=</button>
+                        <button class="key-btn operator-key" onclick="insertKey('+')">+</button>
+                    </div>
+                    <div class="desmos-function-side">
+                        <div class="function-category-tabs">
+                            <button class="function-category-btn active" data-function-category="trig" onclick="switchFunctionCategory('trig')">Trig</button>
+                            <button class="function-category-btn" data-function-category="power" onclick="switchFunctionCategory('power')">Power</button>
+                            <button class="function-category-btn" data-function-category="logs" onclick="switchFunctionCategory('logs')">Logs</button>
+                            <button class="function-category-btn" data-function-category="misc" onclick="switchFunctionCategory('misc')">Misc</button>
+                        </div>
+                        <div id="function-category-trig" class="desmos-function-grid">
+                            <button class="key-btn function-key" onclick="insertKey('sin()',4)">sin</button>
+                            <button class="key-btn function-key" onclick="insertKey('cos()',4)">cos</button>
+                            <button class="key-btn function-key" onclick="insertKey('tan()',4)">tan</button>
+                            <button class="key-btn function-key" onclick="insertKey('asin()',5)">sin⁻¹</button>
+                            <button class="key-btn function-key" onclick="insertKey('acos()',5)">cos⁻¹</button>
+                            <button class="key-btn function-key" onclick="insertKey('atan()',5)">tan⁻¹</button>
+                            <button class="key-btn function-key" onclick="insertKey('pi')">π</button>
+                            <button class="key-btn function-key" onclick="insertKey('^2')">x²</button>
+                            <button class="key-btn function-key" onclick="insertKey('^()',2)">xʸ</button>
+                            <button class="key-btn function-key" onclick="insertKey('sqrt()',5)">√</button>
+                            <button class="key-btn function-key" onclick="insertKey('()/()',1)">a/b</button>
+                            <button class="key-btn function-key" onclick="insertKey('abs()',4)">|x|</button>
+                        </div>
+                        <div id="function-category-power" class="desmos-function-grid hidden">
+                            <button class="key-btn function-key" onclick="insertKey('^2')">x²</button>
+                            <button class="key-btn function-key" onclick="insertKey('^()',2)">xʸ</button>
+                            <button class="key-btn function-key" onclick="insertKey('sqrt()',5)">√</button>
+                            <button class="key-btn function-key" onclick="insertKey('()/()',1)">a/b</button>
+                            <button class="key-btn function-key" onclick="insertKey('abs()',4)">|x|</button>
+                            <button class="key-btn function-key" onclick="insertKey('pi')">π</button>
+                            <button class="key-btn function-key" onclick="insertKey('(')">(</button>
+                            <button class="key-btn function-key" onclick="insertKey(')')">)</button>
+                            <button class="key-btn function-key" onclick="insertKey('x')">x</button>
+                            <button class="key-btn function-key" onclick="insertKey('y')">y</button>
+                            <button class="key-btn function-key" onclick="insertKey('a')">a</button>
+                            <button class="key-btn function-key" onclick="insertKey('b')">b</button>
+                        </div>
+                        <div id="function-category-logs" class="desmos-function-grid hidden">
+                            <button class="key-btn function-key" onclick="insertKey('ln()',3)">ln</button>
+                            <button class="key-btn function-key" onclick="insertKey('log()',4)">log</button>
+                            <button class="key-btn function-key" onclick="insertKey('e')">e</button>
+                            <button class="key-btn function-key" onclick="insertKey('exp()',4)">exp</button>
+                            <button class="key-btn function-key" onclick="insertKey('pi')">π</button>
+                            <button class="key-btn function-key" onclick="insertKey('^2')">x²</button>
+                            <button class="key-btn function-key" onclick="insertKey('^()',2)">xʸ</button>
+                            <button class="key-btn function-key" onclick="insertKey('sqrt()',5)">√</button>
+                            <button class="key-btn function-key" onclick="insertKey('abs()',4)">|x|</button>
+                            <button class="key-btn function-key" onclick="insertKey('mod')">mod</button>
+                            <button class="key-btn function-key" onclick="insertKey('(')">(</button>
+                            <button class="key-btn function-key" onclick="insertKey(')')">)</button>
+                        </div>
+                        <div id="function-category-misc" class="desmos-function-grid hidden">
+                            <button class="key-btn function-key" onclick="insertKey('ln()',3)">ln</button>
+                            <button class="key-btn function-key" onclick="insertKey('log()',4)">log</button>
+                            <button class="key-btn function-key" onclick="insertKey('e')">e</button>
+                            <button class="key-btn function-key" onclick="insertKey('pi')">π</button>
+                            <button class="key-btn function-key" onclick="insertKey('mod')">mod</button>
+                            <button class="key-btn function-key" onclick="insertKey('(')">(</button>
+                            <button class="key-btn function-key" onclick="insertKey(')')">)</button>
+                            <button class="key-btn function-key" onclick="insertKey(',')">,</button>
+                            <button class="key-btn function-key" onclick="insertKey('<=')">≤</button>
+                            <button class="key-btn function-key" onclick="insertKey('>=')">≥</button>
+                            <button class="key-btn function-key" onclick="insertKey('<')">&lt;</button>
+                            <button class="key-btn function-key" onclick="insertKey('>')">&gt;</button>
+                        </div>
+                        <div class="desmos-utility-row">
+                            <button class="key-btn utility-key" onclick="moveCursor(-1)" title="왼쪽"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button class="key-btn utility-key" onclick="moveCursor(1)" title="오른쪽"><i class="fa-solid fa-arrow-right"></i></button>
+                            <button class="key-btn utility-key" onclick="handleBackspace()" title="삭제"><i class="fa-solid fa-delete-left"></i></button>
+                            <button class="key-btn enter-key" onclick="handleEnter()">↵</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 123: Full-width numeric and mathematical keyboard -->
-            <div id="keyboard-123" class="keyboard-layout keyboard-math hidden">
-                <div class="math-keyboard-grid">
-                    <button class="key-btn number-key" onclick="insertKey('7')">7</button>
-                    <button class="key-btn number-key" onclick="insertKey('8')">8</button>
-                    <button class="key-btn number-key" onclick="insertKey('9')">9</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('sqrt()',5)">√</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('^2')">x²</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('^()',2)">xʸ</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('pi')">π</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('e')">e</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('sin()',4)">sin</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('cos()',4)">cos</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('tan()',4)">tan</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('log()',4)">log</button>
-
-                    <button class="key-btn number-key" onclick="insertKey('4')">4</button>
-                    <button class="key-btn number-key" onclick="insertKey('5')">5</button>
-                    <button class="key-btn number-key" onclick="insertKey('6')">6</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('()/()',1)">분수</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('abs()',4)">|x|</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('ln()',3)">ln</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('mod')">mod</button>
-                    <button class="key-btn math-function-key" onclick="insertKey(',')">,</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('(')">(</button>
-                    <button class="key-btn math-function-key" onclick="insertKey(')')">)</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('[')">[</button>
-                    <button class="key-btn math-function-key" onclick="insertKey(']')">]</button>
-
-                    <button class="key-btn number-key" onclick="insertKey('1')">1</button>
-                    <button class="key-btn number-key" onclick="insertKey('2')">2</button>
-                    <button class="key-btn number-key" onclick="insertKey('3')">3</button>
-                    <button class="key-btn operator-key" onclick="insertKey('/')">÷</button>
-                    <button class="key-btn operator-key" onclick="insertKey('*')">×</button>
-                    <button class="key-btn operator-key" onclick="insertKey('-')">−</button>
-                    <button class="key-btn operator-key" onclick="insertKey('+')">+</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('<=')">≤</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('>=')">≥</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('<')">&lt;</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('>')">&gt;</button>
-                    <button class="key-btn utility-key" onclick="moveCursor(-1)"><i class="fa-solid fa-arrow-left"></i></button>
-
-                    <button class="key-btn number-key" onclick="insertKey('0')">0</button>
-                    <button class="key-btn number-key" onclick="insertKey('.')">.</button>
-                    <button class="key-btn operator-key" onclick="insertKey('=')">=</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('x')">x</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('y')">y</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('a')">a</button>
-                    <button class="key-btn math-function-key" onclick="insertKey('b')">b</button>
-                    <button class="key-btn utility-key" onclick="moveCursor(1)"><i class="fa-solid fa-arrow-right"></i></button>
-                    <button class="key-btn utility-key" onclick="handleBackspace()"><i class="fa-solid fa-delete-left"></i></button>
-                    <button class="key-btn utility-key" onclick="insertKey('|')">| |</button>
-                    <button class="key-btn utility-key" onclick="insertKey('^')">^</button>
-                    <button class="key-btn enter-key" onclick="handleEnter()">Enter ↵</button>
+            <div id="keyboard-abc" class="keyboard-layout desmos-abc-layout hidden">
+                <div class="desmos-abc-grid">
+                    <button class="key-btn abc-letter" onclick="insertKey('a')">a</button><button class="key-btn abc-letter" onclick="insertKey('b')">b</button><button class="key-btn abc-letter" onclick="insertKey('c')">c</button><button class="key-btn abc-letter" onclick="insertKey('d')">d</button><button class="key-btn abc-letter" onclick="insertKey('e')">e</button><button class="key-btn abc-letter" onclick="insertKey('f')">f</button><button class="key-btn abc-letter" onclick="insertKey('g')">g</button><button class="key-btn abc-letter" onclick="insertKey('h')">h</button><button class="key-btn abc-letter" onclick="insertKey('i')">i</button>
+                    <button class="key-btn abc-letter" onclick="insertKey('j')">j</button><button class="key-btn abc-letter" onclick="insertKey('k')">k</button><button class="key-btn abc-letter" onclick="insertKey('l')">l</button><button class="key-btn abc-letter" onclick="insertKey('m')">m</button><button class="key-btn abc-letter" onclick="insertKey('n')">n</button><button class="key-btn abc-letter" onclick="insertKey('o')">o</button><button class="key-btn abc-letter" onclick="insertKey('p')">p</button><button class="key-btn abc-letter" onclick="insertKey('q')">q</button><button class="key-btn abc-letter" onclick="insertKey('r')">r</button>
+                    <button class="key-btn abc-letter" onclick="insertKey('s')">s</button><button class="key-btn abc-letter" onclick="insertKey('t')">t</button><button class="key-btn abc-letter" onclick="insertKey('u')">u</button><button class="key-btn abc-letter" onclick="insertKey('v')">v</button><button class="key-btn abc-letter" onclick="insertKey('w')">w</button><button class="key-btn abc-letter" onclick="insertKey('x')">x</button><button class="key-btn abc-letter" onclick="insertKey('y')">y</button><button class="key-btn abc-letter" onclick="insertKey('z')">z</button><button class="key-btn abc-letter" onclick="insertKey('theta')">θ</button>
+                </div>
+                <div class="abc-bottom-row">
+                    <button class="key-btn utility-key" onclick="insertKey('(')">(</button><button class="key-btn utility-key" onclick="insertKey(')')">)</button><button class="key-btn utility-key" onclick="insertKey(',')">,</button><button class="key-btn" onclick="insertKey(' ')">space</button><button class="key-btn utility-key" onclick="handleBackspace()"><i class="fa-solid fa-delete-left"></i></button><button class="key-btn enter-key" onclick="handleEnter()">↵</button>
                 </div>
             </div>
         </div>
 
         <!-- TAB 2: COSMOS AUDIO TRACE PANEL -->
-        <div id="audio-tab-content" class="hidden p-3 w-full flex-col space-y-3 max-h-72 overflow-y-auto">
+        <div id="audio-tab-content" class="hidden p-3 w-full flex-col space-y-3 max-h-72 overflow-y-auto" style="display:none">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
                 
                 <!-- Section 1: Audio Playback Controls -->
@@ -1905,18 +1882,26 @@ HTML = r"""<!DOCTYPE html>
         }
 
         function switchKeyboardMode(mode) {
+            const showABC = mode === 'abc';
             const abc = document.getElementById('keyboard-abc');
             const math = document.getElementById('keyboard-123');
             const abcButton = document.getElementById('keyboard-mode-abc');
             const mathButton = document.getElementById('keyboard-mode-123');
             const hint = document.getElementById('keyboard-mode-hint');
-
-            const showABC = mode === 'abc';
             abc.classList.toggle('hidden', !showABC);
             math.classList.toggle('hidden', showABC);
             abcButton.classList.toggle('active', showABC);
             mathButton.classList.toggle('active', !showABC);
-            hint.textContent = showABC ? '영문 입력' : '숫자 · 수학 기호 · 함수';
+            hint.textContent = showABC ? '문자 입력' : '숫자 · 연산 · 함수';
+        }
+
+        function switchFunctionCategory(category) {
+            ['trig', 'power', 'logs', 'misc'].forEach(name => {
+                const panel = document.getElementById(`function-category-${name}`);
+                const button = document.querySelector(`[data-function-category="${name}"]`);
+                if (panel) panel.classList.toggle('hidden', name !== category);
+                if (button) button.classList.toggle('active', name === category);
+            });
         }
 
         function switchBottomTab(tab) {
@@ -1924,20 +1909,29 @@ HTML = r"""<!DOCTYPE html>
             const audioContent = document.getElementById('audio-tab-content');
             const tabKeypad = document.getElementById('tab-btn-keypad');
             const tabAudio = document.getElementById('tab-btn-audio');
+            const showKeypad = tab !== 'audio';
 
-            if (tab === 'keypad') {
-                keypadContent.classList.remove('hidden');
-                audioContent.classList.add('hidden');
-                tabKeypad.className = 'px-3 py-1 font-semibold rounded bg-white text-slate-800 shadow-sm transition';
-                tabAudio.className = 'px-3 py-1 font-semibold rounded hover:bg-slate-200/80 text-slate-700 transition flex items-center space-x-1';
-            } else {
-                keypadContent.classList.add('hidden');
-                audioContent.classList.remove('hidden');
-                audioContent.classList.add('flex');
-                tabAudio.className = 'px-3 py-1 font-semibold rounded bg-white text-slate-800 shadow-sm transition flex items-center space-x-1';
-                tabKeypad.className = 'px-3 py-1 font-semibold rounded hover:bg-slate-200/80 text-slate-700 transition';
-            }
+            // Set display explicitly as well as the hidden class. This avoids
+            // CSS specificity conflicts between #keypad-tab-content and .hidden.
+            keypadContent.classList.toggle('hidden', !showKeypad);
+            audioContent.classList.toggle('hidden', showKeypad);
+            keypadContent.style.display = showKeypad ? 'flex' : 'none';
+            audioContent.style.display = showKeypad ? 'none' : 'flex';
+            keypadContent.setAttribute('aria-hidden', showKeypad ? 'false' : 'true');
+            audioContent.setAttribute('aria-hidden', showKeypad ? 'true' : 'false');
+
+            tabKeypad.className = showKeypad
+                ? 'px-3 py-1 font-semibold rounded bg-white text-slate-800 shadow-sm transition'
+                : 'px-3 py-1 font-semibold rounded hover:bg-slate-200/80 text-slate-700 transition';
+            tabAudio.className = !showKeypad
+                ? 'px-3 py-1 font-semibold rounded bg-white text-slate-800 shadow-sm transition flex items-center space-x-1'
+                : 'px-3 py-1 font-semibold rounded hover:bg-slate-200/80 text-slate-700 transition flex items-center space-x-1';
         }
+
+        // Start with the Desmos-style numeric keypad and keep audio trace separate.
+        switchKeyboardMode('123');
+        switchFunctionCategory('trig');
+        switchBottomTab('keypad');
 
         /**
          * Canvas Mouse Interactions (Pan, Zoom, Snap Pinning)
