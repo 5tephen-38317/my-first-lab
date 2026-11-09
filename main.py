@@ -2368,47 +2368,79 @@ HTML = r"""<!DOCTYPE html>
 
 # iframe 안의 일반 HTML 링크는 Streamlit 멀티페이지 라우팅을 안정적으로
 # 호출하지 못하므로, 실제 Streamlit 페이지 링크를 헤더 버튼 위치에 겹쳐 배치합니다.
+# Supabase session injection
+session_for_iframe = st.session_state.get("cosmos_supabase_session")
+
+HTML = HTML.replace(
+    "__COSMOS_STREAMLIT_SESSION__",
+    json.dumps(session_for_iframe, ensure_ascii=False)
+    if session_for_iframe else "null"
+)
+
+components.html(HTML, height=1050, scrolling=False)
+
+
+# 로그인 및 회원가입 페이지 이동 버튼
 st.markdown("""
 <style>
-  /* Streamlit native page links sit over the matching controls in the iframe header. */
-  div[data-testid="stPageLink"] {
-    position: fixed !important;
-    top: 7px !important;
-    z-index: 1000000 !important;
-    height: 34px !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-  }
-  div[data-testid="stPageLink"] a {
-    box-sizing: border-box !important;
-    display: block !important;
-    width: 100% !important;
-    height: 34px !important;
-    min-height: 34px !important;
-    padding: 0 !important;
-    border: 0 !important;
-    border-radius: 6px !important;
-    text-decoration: none !important;
-    font-size: 0 !important;
-    line-height: 1 !important;
-    color: transparent !important;
-    background: transparent !important;
-    opacity: 0 !important;
-  }
-  /* Match each real page link by its query parameter, not by DOM sibling order. */
-  div[data-testid="stPageLink"]:has(a[href*="view=login"]) { right: 238px !important; width: 62px !important; }
-  div[data-testid="stPageLink"]:has(a[href*="view=signup"]) { right: 164px !important; width: 76px !important; }
-  div[data-testid="stPageLink"] a:hover { opacity: 0 !important; }
-  div[data-testid="stPageLink"] svg { display: none !important; }
+    .st-key-cosmos-login-route,
+    .st-key-cosmos-signup-route {
+        position: fixed !important;
+        top: 7px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 2147483647 !important;
+        opacity: 0 !important;
+        pointer-events: auto !important;
+    }
+
+    .st-key-cosmos-login-route {
+        right: 238px !important;
+        width: 62px !important;
+    }
+
+    .st-key-cosmos-signup-route {
+        right: 164px !important;
+        width: 76px !important;
+    }
+
+    .st-key-cosmos-login-route [data-testid="stPageLink"],
+    .st-key-cosmos-signup-route [data-testid="stPageLink"] {
+        width: 100% !important;
+        height: 34px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .st-key-cosmos-login-route a,
+    .st-key-cosmos-signup-route a {
+        display: flex !important;
+        width: 100% !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        cursor: pointer !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# These genuine Streamlit page links are transparent click targets placed over the
-# existing visible header controls, so their visual position and design do not change.
-st.page_link("pages/login.py", label="로그인", query_params={"view": "login"})
-st.page_link("pages/login.py", label="회원가입", query_params={"view": "signup"})
 
+with st.container(key="cosmos-login-route"):
+    st.page_link(
+        "pages/login.py",
+        label="로그인",
+        query_params={"view": "login"}
+    )
+
+with st.container(key="cosmos-signup-route"):
+    st.page_link(
+        "pages/login.py",
+        label="회원가입",
+        query_params={"view": "signup"}
+    )
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
