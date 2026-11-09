@@ -235,9 +235,6 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- Right User Actions -->
         <div class="flex items-center space-x-1 sm:space-x-2">
-            <a href="/login" target="_top"
-               class="text-xs font-medium px-3 py-1.5 rounded text-slate-300 hover:text-white hover:bg-[#3b3b3b] transition no-underline"
-               title="로그인 및 회원가입">계정</a>
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
 
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
@@ -2365,9 +2362,46 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# 로그인과 회원가입 UI는 pages/login.py에서만 제공하며,
-# 메인 그래프 화면에는 로그인/회원가입 버튼이나 로그인 모달을 표시하지 않습니다.
-# Streamlit의 실제 multipage 경로로 계정 페이지에 이동합니다.
+# 계정 이동은 iframe 내부의 임의 URL 링크가 아니라 Streamlit이 생성하는
+# 실제 multipage 링크를 사용합니다. 버튼은 iframe 위에 고정해 상단바의
+# 공유 버튼 바로 왼쪽 위치에 겹쳐 표시합니다.
+st.markdown("""
+<style>
+    [data-testid="stPageLink"] {
+        position: fixed !important;
+        top: 7px !important;
+        right: 205px !important;
+        z-index: 999999 !important;
+        width: 48px !important;
+        height: 34px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    [data-testid="stPageLink"] a {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 48px !important;
+        height: 34px !important;
+        padding: 0 8px !important;
+        border-radius: 4px !important;
+        color: #cbd5e1 !important;
+        background: transparent !important;
+        text-decoration: none !important;
+        font-size: 12px !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stPageLink"] a:hover {
+        color: #fff !important;
+        background: #3b3b3b !important;
+    }
+    [data-testid="stPageLink"] a svg { display: none !important; }
+    @media (max-width: 700px) {
+        [data-testid="stPageLink"] { right: 188px !important; }
+    }
+</style>
+""", unsafe_allow_html=True)
+st.page_link("pages/login.py", label="계정", icon=None)
 
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
