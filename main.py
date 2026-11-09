@@ -240,7 +240,6 @@ HTML = r"""<!DOCTYPE html>
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
             </button>
-            <div class="h-4 w-[1px] bg-slate-600 mx-1"></div>
             <button onclick="openModal('share-modal')" class="p-1.5 text-slate-300 hover:text-white hover:bg-[#3b3b3b] rounded transition" title="공유">
                 <i class="fa-solid fa-share-nodes text-sm"></i>
             </button>
@@ -2370,7 +2369,7 @@ st.markdown("""
     [data-testid="stPageLink"] {
         position: fixed !important;
         top: 7px !important;
-        right: 205px !important;
+        right: 146px !important;
         z-index: 999999 !important;
         width: 48px !important;
         height: 34px !important;
@@ -2397,7 +2396,7 @@ st.markdown("""
     }
     [data-testid="stPageLink"] a svg { display: none !important; }
     @media (max-width: 700px) {
-        [data-testid="stPageLink"] { right: 188px !important; }
+        [data-testid="stPageLink"] { right: 138px !important; }
     }
 </style>
 """, unsafe_allow_html=True)
