@@ -236,6 +236,7 @@ HTML = r"""<!DOCTYPE html>
         <!-- Right User Actions -->
         <div class="flex items-center space-x-1 sm:space-x-2">
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
+            <a href="/login" target="_top" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] transition text-white no-underline">계정</a>
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
             </button>
