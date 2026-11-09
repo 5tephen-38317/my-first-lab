@@ -233,10 +233,15 @@ HTML = r"""<!DOCTYPE html>
             <span class="text-xl font-bold tracking-tight text-white font-serif italic">cosmos</span>
         </div>
 
-        <!-- Right User Actions -->
+        <!-- Right User Actions: 로그인/회원가입은 Cosmos 헤더 안에서 로고와 같은 높이로 표시 -->
         <div class="flex items-center space-x-1 sm:space-x-2">
+            <button id="login-nav-btn" onclick="navigateToAuth('login')" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] text-slate-200 transition">
+                로그인
+            </button>
+            <button id="signup-nav-btn" onclick="navigateToAuth('signup')" class="text-xs font-semibold px-3 py-1.5 rounded bg-[#2b72ee] hover:bg-blue-600 text-white transition">
+                회원가입
+            </button>
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
-
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
             </button>
@@ -2194,6 +2199,15 @@ HTML = r"""<!DOCTYPE html>
         let cosmosUser = null;
         let cloudSaveTimer = null;
 
+        // 헤더 내부 버튼에서 Streamlit의 pages/login.py로 직접 이동한다.
+        // 별도의 st.page_link를 만들지 않으므로 헤더 위에 링크 행이 생기지 않는다.
+        function navigateToAuth(view) {
+            const safeView = view === 'signup' ? 'signup' : 'login';
+            const destination = new URL('/login', window.parent.location.origin);
+            destination.searchParams.set('view', safeView);
+            window.parent.location.assign(destination.toString());
+        }
+
         function showAuthError(id, message) {
             const el = document.getElementById(id);
             el.textContent = message;
@@ -2254,13 +2268,19 @@ HTML = r"""<!DOCTYPE html>
             if (!session && !cloud) session = null;
             const label = document.getElementById('account-label');
             const logoutBtn = document.getElementById('logout-nav-btn');
+            const loginBtn = document.getElementById('login-nav-btn');
+            const signupBtn = document.getElementById('signup-nav-btn');
             if (session && session.email) {
                 label.textContent = session.name || session.email;
                 label.classList.remove('hidden');
                 logoutBtn.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                signupBtn.classList.add('hidden');
             } else {
                 label.classList.add('hidden');
                 logoutBtn.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                signupBtn.classList.remove('hidden');
             }
         }
 
@@ -2361,47 +2381,8 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# 계정 이동은 iframe 내부의 임의 URL 링크가 아니라 Streamlit이 생성하는
-# 실제 multipage 링크를 사용합니다. 버튼은 iframe 위에 고정해 상단바의
-# 공유 버튼 바로 왼쪽 위치에 겹쳐 표시합니다.
-st.markdown("""
-<style>
-    [data-testid="stPageLink"] {
-        position: fixed !important;
-        top: 7px !important;
-        right: 146px !important;
-        z-index: 999999 !important;
-        width: 48px !important;
-        height: 34px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    [data-testid="stPageLink"] a {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 48px !important;
-        height: 34px !important;
-        padding: 0 8px !important;
-        border-radius: 4px !important;
-        color: #cbd5e1 !important;
-        background: transparent !important;
-        text-decoration: none !important;
-        font-size: 12px !important;
-        font-weight: 500 !important;
-    }
-    [data-testid="stPageLink"] a:hover {
-        color: #fff !important;
-        background: #3b3b3b !important;
-    }
-    [data-testid="stPageLink"] a svg { display: none !important; }
-    @media (max-width: 700px) {
-        [data-testid="stPageLink"] { right: 138px !important; }
-    }
-</style>
-""", unsafe_allow_html=True)
-st.page_link("pages/login.py", label="계정", icon=None)
-
+# 별도의 Streamlit page_link를 생성하지 않는다.
+# 로그인/회원가입 진입 버튼은 HTML 헤더 내부에 있으며 /login 경로로 직접 이동한다.
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
