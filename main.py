@@ -235,10 +235,10 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- Right User Actions: 로그인/회원가입은 Cosmos 헤더 안에서 로고와 같은 높이로 표시 -->
         <div class="flex items-center space-x-1 sm:space-x-2">
-            <a id="login-nav-btn" href="/login?view=login" target="_top" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] text-slate-200 transition inline-flex items-center">
+            <a id="login-nav-btn" href="#" onclick="return false;" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] text-slate-200 transition inline-flex items-center">
                 로그인
             </a>
-            <a id="signup-nav-btn" href="/login?view=signup" target="_top" class="text-xs font-semibold px-3 py-1.5 rounded bg-[#2b72ee] hover:bg-blue-600 text-white transition inline-flex items-center">
+            <a id="signup-nav-btn" href="#" onclick="return false;" class="text-xs font-semibold px-3 py-1.5 rounded bg-[#2b72ee] hover:bg-blue-600 text-white transition inline-flex items-center">
                 회원가입
             </a>
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
@@ -2259,19 +2259,13 @@ HTML = r"""<!DOCTYPE html>
             if (!session && !cloud) session = null;
             const label = document.getElementById('account-label');
             const logoutBtn = document.getElementById('logout-nav-btn');
-            const loginBtn = document.getElementById('login-nav-btn');
-            const signupBtn = document.getElementById('signup-nav-btn');
             if (session && session.email) {
                 label.textContent = session.name || session.email;
                 label.classList.remove('hidden');
                 logoutBtn.classList.remove('hidden');
-                loginBtn.classList.add('hidden');
-                signupBtn.classList.add('hidden');
             } else {
                 label.classList.add('hidden');
                 logoutBtn.classList.add('hidden');
-                loginBtn.classList.remove('hidden');
-                signupBtn.classList.remove('hidden');
             }
         }
 
@@ -2372,7 +2366,49 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# 로그인/회원가입은 헤더 내부의 최상위 페이지 링크로 pages/login.py에 직접 진입한다.
+# iframe 안의 일반 HTML 링크는 Streamlit 멀티페이지 라우팅을 안정적으로
+# 호출하지 못하므로, 실제 Streamlit 페이지 링크를 헤더 버튼 위치에 겹쳐 배치합니다.
+st.markdown("""
+<style>
+  /* Streamlit native page links sit over the matching controls in the iframe header. */
+  div[data-testid="stPageLink"] {
+    position: fixed !important;
+    top: 7px !important;
+    z-index: 1000000 !important;
+    height: 34px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+  div[data-testid="stPageLink"] a {
+    box-sizing: border-box !important;
+    display: block !important;
+    width: 100% !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    color: transparent !important;
+    background: transparent !important;
+    opacity: 0 !important;
+  }
+  /* Match each real page link by its query parameter, not by DOM sibling order. */
+  div[data-testid="stPageLink"]:has(a[href*="view=login"]) { right: 238px !important; width: 62px !important; }
+  div[data-testid="stPageLink"]:has(a[href*="view=signup"]) { right: 164px !important; width: 76px !important; }
+  div[data-testid="stPageLink"] a:hover { opacity: 0 !important; }
+  div[data-testid="stPageLink"] svg { display: none !important; }
+</style>
+""", unsafe_allow_html=True)
+
+# These genuine Streamlit page links are transparent click targets placed over the
+# existing visible header controls, so their visual position and design do not change.
+st.page_link("pages/login.py", label="로그인", query_params={"view": "login"})
+st.page_link("pages/login.py", label="회원가입", query_params={"view": "signup"})
+
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
