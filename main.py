@@ -236,7 +236,7 @@ HTML = r"""<!DOCTYPE html>
         <!-- Right User Actions -->
         <div class="flex items-center space-x-1 sm:space-x-2">
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
-            <a href="/login" target="_top" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] transition text-white no-underline">계정</a>
+
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
             </button>
@@ -2364,6 +2364,34 @@ HTML = r"""<!DOCTYPE html>
 
 # 로그인과 회원가입 UI는 pages/login.py에서만 제공하며,
 # 메인 그래프 화면에는 로그인/회원가입 버튼이나 로그인 모달을 표시하지 않습니다.
+# Streamlit의 실제 multipage 경로로 계정 페이지에 이동합니다.
+# 링크를 화면 오른쪽 위에 고정해 기존 Cosmos 상단 메뉴의 위치와 맞춥니다.
+st.markdown("""
+<style>
+    div[data-testid="stPageLink-NavLink"] {
+        position: fixed !important;
+        top: 7px !important;
+        right: 12px !important;
+        z-index: 100000 !important;
+        width: auto !important;
+    }
+    div[data-testid="stPageLink-NavLink"] a {
+        min-height: 32px !important;
+        padding: 5px 13px !important;
+        border-radius: 4px !important;
+        background: transparent !important;
+        color: #ffffff !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+    }
+    div[data-testid="stPageLink-NavLink"] a:hover {
+        background: #3b3b3b !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+st.page_link("pages/login.py", label="계정", icon=None)
+
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
