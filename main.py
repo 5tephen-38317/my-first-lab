@@ -9,13 +9,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 헤더의 로그인/회원가입 버튼에서 전달한 요청을 Streamlit 페이지 전환으로 처리합니다.
-# iframe에서 /login 주소를 직접 여는 방식은 pages/ 기반 멀티페이지 라우팅과
-# 일치하지 않을 수 있으므로, main.py가 요청을 받아 공식 페이지 전환을 실행합니다.
-auth_navigation = st.query_params.get("cosmos_auth")
-if auth_navigation == "1":
-    st.switch_page("pages/login.py")
-
 # Cosmos 그래프 + 오디오 추적 단일 화면
 # Streamlit 기본 여백을 제거해 계산기 화면을 넓게 표시합니다.
 st.markdown("""
@@ -242,12 +235,12 @@ HTML = r"""<!DOCTYPE html>
 
         <!-- Right User Actions: 로그인/회원가입은 Cosmos 헤더 안에서 로고와 같은 높이로 표시 -->
         <div class="flex items-center space-x-1 sm:space-x-2">
-            <button id="login-nav-btn" onclick="navigateToAuth('login')" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] text-slate-200 transition">
+            <a id="login-nav-btn" href="/login?view=login" target="_top" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] text-slate-200 transition inline-flex items-center">
                 로그인
-            </button>
-            <button id="signup-nav-btn" onclick="navigateToAuth('signup')" class="text-xs font-semibold px-3 py-1.5 rounded bg-[#2b72ee] hover:bg-blue-600 text-white transition">
+            </a>
+            <a id="signup-nav-btn" href="/login?view=signup" target="_top" class="text-xs font-semibold px-3 py-1.5 rounded bg-[#2b72ee] hover:bg-blue-600 text-white transition inline-flex items-center">
                 회원가입
-            </button>
+            </a>
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
@@ -2206,17 +2199,6 @@ HTML = r"""<!DOCTYPE html>
         let cosmosUser = null;
         let cloudSaveTimer = null;
 
-        // 헤더 내부 버튼에서 Streamlit의 pages/login.py로 직접 이동한다.
-        // 별도의 st.page_link를 만들지 않으므로 헤더 위에 링크 행이 생기지 않는다.
-        function navigateToAuth(view) {
-            const safeView = view === 'signup' ? 'signup' : 'login';
-            // main.py에 인증 페이지 전환을 요청하고, Streamlit이 pages/login.py로 이동하게 합니다.
-            const destination = new URL('/', window.parent.location.origin);
-            destination.searchParams.set('cosmos_auth', '1');
-            destination.searchParams.set('view', safeView);
-            window.parent.location.assign(destination.toString());
-        }
-
         function showAuthError(id, message) {
             const el = document.getElementById(id);
             el.textContent = message;
@@ -2390,8 +2372,7 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# 별도의 Streamlit page_link를 생성하지 않는다.
-# 로그인/회원가입 진입 버튼은 HTML 헤더 내부에 있으며 /login 경로로 직접 이동한다.
+# 로그인/회원가입은 헤더 내부의 최상위 페이지 링크로 pages/login.py에 직접 진입한다.
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
