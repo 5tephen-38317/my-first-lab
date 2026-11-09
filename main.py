@@ -236,12 +236,6 @@ HTML = r"""<!DOCTYPE html>
         <!-- Right User Actions -->
         <div class="flex items-center space-x-1 sm:space-x-2">
             <span id="account-label" class="hidden text-xs text-slate-200 px-2"></span>
-            <button id="login-nav-btn" onclick="openModal('login-modal')" class="text-xs font-medium px-3 py-1.5 rounded hover:bg-[#3b3b3b] transition">
-                로그인
-            </button>
-            <button id="signup-nav-btn" onclick="openModal('signup-modal')" class="bg-[#2b72ee] hover:bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded transition shadow-sm">
-                회원가입
-            </button>
             <button id="logout-nav-btn" onclick="logoutAccount()" class="hidden text-xs font-medium px-3 py-1.5 rounded border border-slate-600 hover:bg-[#3b3b3b] transition">
                 로그아웃
             </button>
@@ -618,46 +612,6 @@ HTML = r"""<!DOCTYPE html>
     <!-- MODAL DIALOGS -->
     <div id="modal-backdrop" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         
-        <!-- Login Modal -->
-        <div id="login-modal" class="hidden bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 flex flex-col space-y-4" role="dialog" aria-modal="true" aria-labelledby="login-heading">
-            <div class="flex justify-between items-center">
-                <h3 id="login-heading" class="text-lg font-bold text-slate-800">Cosmos 로그인</h3>
-                <button onclick="closeModal()" aria-label="닫기" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-xs text-slate-500">이 브라우저에서 가입한 계정으로 로그인합니다.</p>
-            <form onsubmit="loginAccount(event)" class="flex flex-col space-y-3">
-                <label class="text-xs font-semibold text-slate-600">이메일</label>
-                <input id="login-email" type="email" autocomplete="username" required placeholder="name@example.com" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <label class="text-xs font-semibold text-slate-600">비밀번호</label>
-                <input id="login-password" type="password" autocomplete="current-password" required placeholder="비밀번호" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <p id="login-error" class="hidden text-xs text-red-600" role="alert"></p>
-                <button type="submit" class="w-full bg-[#2b72ee] text-white py-2 rounded font-semibold text-sm hover:bg-blue-600 transition">로그인</button>
-            </form>
-            <button onclick="openModal('signup-modal')" class="text-xs text-blue-600 hover:underline">아직 계정이 없나요? 회원가입</button>
-        </div>
-
-        <!-- Signup Modal -->
-        <div id="signup-modal" class="hidden bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 flex flex-col space-y-4" role="dialog" aria-modal="true" aria-labelledby="signup-heading">
-            <div class="flex justify-between items-center">
-                <h3 id="signup-heading" class="text-lg font-bold text-slate-800">Cosmos 계정 만들기</h3>
-                <button onclick="closeModal()" aria-label="닫기" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <p class="text-xs text-slate-500">데모 계정은 현재 사용 중인 브라우저에만 저장됩니다.</p>
-            <form onsubmit="signupAccount(event)" class="flex flex-col space-y-3">
-                <label class="text-xs font-semibold text-slate-600">이름</label>
-                <input id="signup-name" type="text" autocomplete="name" required maxlength="40" placeholder="이름" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <label class="text-xs font-semibold text-slate-600">이메일</label>
-                <input id="signup-email" type="email" autocomplete="email" required placeholder="name@example.com" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <label class="text-xs font-semibold text-slate-600">비밀번호 (8자 이상)</label>
-                <input id="signup-password" type="password" autocomplete="new-password" minlength="8" required placeholder="8자 이상 입력" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <label class="text-xs font-semibold text-slate-600">비밀번호 확인</label>
-                <input id="signup-confirm" type="password" autocomplete="new-password" minlength="8" required placeholder="비밀번호 다시 입력" class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <p id="signup-error" class="hidden text-xs text-red-600" role="alert"></p>
-                <button type="submit" class="w-full bg-[#2b72ee] text-white py-2 rounded font-semibold text-sm hover:bg-blue-600 transition">회원가입</button>
-            </form>
-            <button onclick="openModal('login-modal')" class="text-xs text-blue-600 hover:underline">이미 계정이 있나요? 로그인</button>
-        </div>
-
         <!-- Saved Graphs / File Modal -->
         <div id="file-modal" class="hidden bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 flex flex-col space-y-4">
             <div class="flex justify-between items-center">
@@ -2215,7 +2169,7 @@ HTML = r"""<!DOCTYPE html>
          */
         function openModal(id) {
             document.getElementById('modal-backdrop').classList.remove('hidden');
-            ['login-modal', 'signup-modal', 'file-modal', 'share-modal', 'settings-modal', 'help-modal'].forEach(m => {
+            ['file-modal', 'share-modal', 'settings-modal', 'help-modal'].forEach(m => {
                 document.getElementById(m).classList.add('hidden');
             });
             if (id === 'share-modal') {
@@ -2254,46 +2208,6 @@ HTML = r"""<!DOCTYPE html>
             if (cloud) return true;
             showAuthError(id, '계정 동기화를 사용하려면 Supabase 프로젝트 URL과 anon key 설정이 필요합니다.');
             return false;
-        }
-
-        async function signupAccount(event) {
-            event.preventDefault(); clearAuthError('signup-error');
-            if (!requireCloud('signup-error')) return;
-            const name = document.getElementById('signup-name').value.trim();
-            const email = document.getElementById('signup-email').value.trim().toLowerCase();
-            const password = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('signup-confirm').value;
-            if (!name || !email) return showAuthError('signup-error', '이름과 이메일을 입력해 주세요.');
-            if (password.length < 8) return showAuthError('signup-error', '비밀번호는 8자 이상이어야 합니다.');
-            if (password !== confirm) return showAuthError('signup-error', '비밀번호 확인이 일치하지 않습니다.');
-            try {
-                const { data, error } = await cloud.auth.signUp({ email, password, options: { data: { display_name: name } } });
-                if (error) throw error;
-                if (data.session && data.user) {
-                    cosmosUser = data.user;
-                    await afterCloudLogin(name, email);
-                    showToast('회원가입 완료! 바로 로그인되었습니다.');
-                } else {
-                    showAuthError('signup-error', '계정은 생성됐지만 바로 로그인되지 않았습니다. Supabase에서 Authentication → Providers → Email → Confirm email을 끈 뒤 다시 시도하거나 로그인해 주세요.');
-                }
-                document.getElementById('signup-password').value = '';
-                document.getElementById('signup-confirm').value = '';
-            } catch (err) { showAuthError('signup-error', err.message || '회원가입에 실패했습니다.'); }
-        }
-
-        async function loginAccount(event) {
-            event.preventDefault(); clearAuthError('login-error');
-            if (!requireCloud('login-error')) return;
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
-            try {
-                const { data, error } = await cloud.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                cosmosUser = data.user;
-                const name = data.user.user_metadata?.display_name || email.split('@')[0];
-                await afterCloudLogin(name, email);
-                document.getElementById('login-password').value = '';
-            } catch (err) { console.error('Login failed:', err); showAuthError('login-error', '로그인 실패: 이메일·비밀번호를 확인해 주세요. 회원가입 직후라면 Supabase의 Confirm email 설정이 꺼져 있는지도 확인해 주세요.'); }
         }
 
         async function afterCloudLogin(name, email) {
@@ -2339,19 +2253,13 @@ HTML = r"""<!DOCTYPE html>
             if (!session && cosmosUser) session = { name: cosmosUser.user_metadata?.display_name || cosmosUser.email?.split('@')[0], email: cosmosUser.email };
             if (!session && !cloud) session = null;
             const label = document.getElementById('account-label');
-            const loginBtn = document.getElementById('login-nav-btn');
-            const signupBtn = document.getElementById('signup-nav-btn');
             const logoutBtn = document.getElementById('logout-nav-btn');
             if (session && session.email) {
                 label.textContent = session.name || session.email;
                 label.classList.remove('hidden');
-                loginBtn.classList.add('hidden');
-                signupBtn.classList.add('hidden');
                 logoutBtn.classList.remove('hidden');
             } else {
                 label.classList.add('hidden');
-                loginBtn.classList.remove('hidden');
-                signupBtn.classList.remove('hidden');
                 logoutBtn.classList.add('hidden');
             }
         }
@@ -2453,11 +2361,8 @@ HTML = r"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# 회원가입은 Streamlit 다중 페이지로 분리해 pages/회원가입.py에서 처리합니다.
-nav_spacer, signup_link_col = st.columns([8, 1])
-with signup_link_col:
-    st.page_link("pages/login.py", label="회원가입", icon=":material/person_add:")
-
+# 로그인과 회원가입 UI는 pages/login.py에서만 제공하며,
+# 메인 그래프 화면에는 로그인/회원가입 버튼이나 로그인 모달을 표시하지 않습니다.
 session_for_iframe = st.session_state.get("cosmos_supabase_session")
 HTML = HTML.replace("__COSMOS_STREAMLIT_SESSION__", json.dumps(session_for_iframe, ensure_ascii=False) if session_for_iframe else "null")
 components.html(HTML, height=1050, scrolling=False)
